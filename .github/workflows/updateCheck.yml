@@ -1,0 +1,60 @@
+name: Check for update Experimental
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The game branch (EarlyAccess/Experimental)'
+        required: true
+        type: string
+
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Set appName to CrabEA
+        if: inputs == 'EarlyAccess'
+        run: |
+          echo "::set-env name=appName::CrabEA"
+      
+      - name: Set appName to CrabTest
+        if: inputs == 'Experimental'
+        run: |
+          echo "::set-env name=appName::CrabTest"
+      
+      - name: Download legendary
+        run: gh release download --repo derrod/legendary -p "legendary.exe"
+      
+      - name: Download Satisfactory version file
+        run: legendary download ${{ appName }} --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+
+      - name: Read Satisfactory version
+        id: gameVersion
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+            path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
+            prop_path: 'Changelist'
+      
+      - run: echo "::set-env name=gameVersion::${{steps.gameVersion.outputs.prop}}"
+
+      - uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/${{ inputs.branch }}'
+          path: 'satisfactory-modding'
+
+      - name: Read current repo version
+        id: currentVersion
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: 'satisfactory-modding/Headers/currentVersion.txt'
+      
+      - run: echo "::set-env name=currentVersion::${{steps.currentVersion.outputs.content}}"
+      
+      - name: Invoke workflow without inputs
+        if: gameVersion > currentVersion
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: updateHeaders
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          inputs: '{ "branch": "${{ branch }}" }'
