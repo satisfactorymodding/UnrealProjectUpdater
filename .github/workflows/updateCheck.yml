@@ -18,13 +18,15 @@ jobs:
 
       - name: Set appName to CrabEA
         if: inputs.branch == 'EarlyAccess'
-        run: |
-          echo "::set-env name=appName::CrabEA"
+        run: echo "::set-env name=appName::CrabEA"
       
       - name: Set appName to CrabTest
         if: inputs.branch == 'Experimental'
-        run: |
-          echo "::set-env name=appName::CrabTest"
+        run: echo "::set-env name=appName::CrabTest"
+      
+      - name: Invalid branch
+        if: inputs.branch != 'Experimental' && inputs.branch != 'EarlyAccess'
+        run: echo "Invalid branch ${{ inputs.branch }}"
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
