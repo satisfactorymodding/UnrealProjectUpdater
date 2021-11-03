@@ -115,7 +115,7 @@ jobs:
         run: cp satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
           
       - name: Run game and dump native classes
-        run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentsList "-EpicPortal -nullrhi -DumpNativeClasses" -Wait
+        run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpNativeClasses" -Wait
           
       - name: Run defaults generator
         run: py satisfactory-modding\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
