@@ -17,16 +17,16 @@ jobs:
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
 
       - name: Set appName to CrabEA
-        if: INPUT_branch == 'EarlyAccess'
+        if: env.INPUT_BRANCH == 'EarlyAccess'
         run: echo "::set-env name=appName::CrabEA"
       
       - name: Set appName to CrabTest
-        if: INPUT_branchh == 'Experimental'
+        if: env.INPUT_BRANCH == 'Experimental'
         run: echo "::set-env name=appName::CrabTest"
       
       - name: Invalid branch
-        if: INPUT_branch != 'Experimental' && INPUT_branch != 'EarlyAccess'
-        run: echo "Invalid branch ${{ inputs.branch }}"
+        if: env.INPUT_BRANCH != 'Experimental' && env.INPUT_BRANCH != 'EarlyAccess'
+        run: echo "Invalid branch ${{ env.INPUT_BRANCH }}"
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ INPUT_branch }}'
+          ref: 'refs/heads/${{ env.INPUT_BRANCH }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
 
@@ -63,4 +63,4 @@ jobs:
         with:
           workflow: updateHeaders
           token: ${{ secrets.PERSONAL_TOKEN }}
-          inputs: '{ "branch": "${{ INPUT_branch }}" }'
+          inputs: '{ "branch": "${{ env.INPUT_BRANCH }}" }'
