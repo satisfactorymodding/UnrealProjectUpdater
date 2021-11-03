@@ -1,4 +1,4 @@
-name: Check for update Experimental
+name: Run update if necessary
 
 on:
   workflow_dispatch:
@@ -7,7 +7,6 @@ on:
         description: 'The game branch (EarlyAccess/Experimental)'
         required: true
         type: string
-
 
 jobs:
   build:
