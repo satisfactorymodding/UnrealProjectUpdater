@@ -18,11 +18,11 @@ jobs:
 
       - name: Set appName to CrabEA
         if: github.event.inputs.branch == 'EarlyAccess'
-        run: echo "appName=CrabEA" >> $GITHUB_ENV
+        run: echo "appName=CrabEA" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       
       - name: Set appName to CrabTest
         if: github.event.inputs.branch == 'Experimental'
-        run: echo "appName=CrabTest" >> $GITHUB_ENV
+        run: echo "appName=CrabTest" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       
       - name: Invalid branch
         if: github.event.inputs.branch != 'Experimental' && github.event.inputs.branch != 'EarlyAccess'
@@ -45,7 +45,7 @@ jobs:
             prop_path: 'Changelist'
       
       - name: Set gameVersion variable
-        run: echo "gameVersion=${{steps.gameVersion.outputs.prop}}" >> $GITHUB_ENV
+        run: echo "gameVersion=${{steps.gameVersion.outputs.prop}}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - uses: actions/checkout@v2
         with:
@@ -61,7 +61,7 @@ jobs:
       
       
       - name: Set gameVersion variable
-        run: echo "currentVersion=${{steps.currentVersion.outputs.content}}" >> $GITHUB_ENV
+        run: echo "currentVersion=${{steps.currentVersion.outputs.content}}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       
       - name: Invoke workflow without inputs
         if: env.gameVersion > env.currentVersion
