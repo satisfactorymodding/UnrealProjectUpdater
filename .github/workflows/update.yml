@@ -50,10 +50,10 @@ jobs:
           repository: 'mircearoata/satisfactory-modding'
       
       - name: Create Unreal Engine directory
-        run: mkdir UnrealEngine
+        run: mkdir ue4
         
       - name: Setup Unreal Engine
-        working-directory: UnrealEngine
+        working-directory: ue4
         run: |
           gh release download --repo SatisfactoryModdingUE/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
           7z x UnrealEngine-CSS-Editor-Win64.7z.001
@@ -73,7 +73,7 @@ jobs:
           MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
           
       - name: Update headers and dummy implementations
-        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="UnrealEngine"
+        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="ue4"
         
       - name: Create Plugins directory
         run: mkdir satisfactory-modding/FactoryGame/Plugins
@@ -87,7 +87,7 @@ jobs:
       
       - name: Compile project
         run: |
-          .\\UnrealEngine\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
@@ -123,5 +123,5 @@ jobs:
           
       - name: Restore registry
         if: always()
-        working-directory: UnrealEngine
+        working-directory: ue4
         run: reg restore "HKCU\\Software\\Epic Games\\Unreal Engine\\Builds" UEBuilds.hiv
