@@ -28,11 +28,14 @@ jobs:
         if: github.event.inputs.branch != 'Experimental' && github.event.inputs.branch != 'EarlyAccess'
         run: echo "Invalid branch ${{ github.event.inputs.branch }}"
       
+      - name: Echo appName
+        run: echo "${{ env.appName }} --- ${{ env.app_name }} --- ${{ env.APP_NAME }} --- ${{ env.APPNAME }}"
+      
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
       
       - name: Download Satisfactory version file
-        run: .\legendary.exe download ${{ env.appName }} --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+        run: .\legendary.exe download "${{ env.appName }}" --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
         id: gameVersion
