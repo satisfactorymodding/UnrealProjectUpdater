@@ -13,29 +13,25 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - name: Validate branch name
+        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        run: |
+          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          exit 1
+      
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
-
-      - name: Set appName to CrabEA
-        if: github.event.inputs.branch == 'EarlyAccess'
-        run: echo "appName=CrabEA" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      
-      - name: Set appName to CrabTest
-        if: github.event.inputs.branch == 'Experimental'
-        run: echo "appName=CrabTest" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      
-      - name: Invalid branch
-        if: github.event.inputs.branch != 'Experimental' && github.event.inputs.branch != 'EarlyAccess'
-        run: echo "Invalid branch ${{ github.event.inputs.branch }}"
-      
-      - name: Echo appName
-        run: echo "${{ env.appName }} --- ${{ env.app_name }} --- ${{ env.APP_NAME }} --- ${{ env.APPNAME }}"
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
       
-      - name: Download Satisfactory version file
-        run: .\legendary.exe download "${{ env.appName }}" --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+      - name: Download Satisfactory EarlyAccess version file
+        if: github.event.inputs.branch == 'EarlyAccess'
+        run: .\legendary.exe download CrabEA --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+      
+      - name: Download Satisfactory Experimental version file
+        if: github.event.inputs.branch == 'Experimental'
+        run: .\legendary.exe download CrabTest --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
         id: gameVersion
@@ -43,9 +39,6 @@ jobs:
         with: 
             path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
             prop_path: 'Changelist'
-      
-      - name: Set gameVersion variable
-        run: echo "gameVersion=${{steps.gameVersion.outputs.prop}}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - uses: actions/checkout@v2
         with:
@@ -59,12 +52,8 @@ jobs:
         with:
           path: 'satisfactory-modding/Headers/currentVersion.txt'
       
-      
-      - name: Set gameVersion variable
-        run: echo "currentVersion=${{steps.currentVersion.outputs.content}}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      
       - name: Invoke workflow without inputs
-        if: env.gameVersion > env.currentVersion
+        if: steps.gameVersion.outputs.prop > steps.currentVersion.outputs.content
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: updateHeaders
