@@ -14,12 +14,12 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Set appName to CrabEA
-        if: inputs == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: |
           echo "::set-env name=appName::CrabEA"
       
       - name: Set appName to CrabTest
-        if: inputs == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: |
           echo "::set-env name=appName::CrabTest"
       
@@ -58,4 +58,4 @@ jobs:
         with:
           workflow: updateHeaders
           token: ${{ secrets.PERSONAL_TOKEN }}
-          inputs: '{ "branch": "${{ branch }}" }'
+          inputs: '{ "branch": "${{ inputs.branch }}" }'
