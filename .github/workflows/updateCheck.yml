@@ -13,6 +13,9 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
+
       - name: Set appName to CrabEA
         if: inputs.branch == 'EarlyAccess'
         run: |
