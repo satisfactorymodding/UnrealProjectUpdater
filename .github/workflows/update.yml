@@ -101,6 +101,10 @@ jobs:
       - name: Copy AssetDumper to project
         run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins -Recurse
           
+      - name: Compile AssetDumper
+        run: |
+          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          
       - name: Set AssetDumper BuildId
         run: |
           .\jq-win64.exe -r '.BuildId = ""SML""' satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
