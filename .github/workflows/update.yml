@@ -49,6 +49,9 @@ jobs:
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
       
+      - name: Create Unreal Engine directory
+        run: mkdir UnrealEngine
+        
       - name: Setup Unreal Engine
         working-directory: UnrealEngine
         run: |
@@ -72,9 +75,15 @@ jobs:
       - name: Update headers and dummy implementations
         run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="UnrealEngine"
         
+      - name: Create Plugins directory
+        run: mkdir satisfactory-modding/FactoryGame/Plugins
+        
       - name: Add Wwise
-        working-directory: satisfactory-modding/FactoryGame/Plguins/Wwise
-        run: cp E:\\SatisfactoryModding\\SatisfactoryModLoader\\Plugins\\Wwise . -Recurse # TODO
+        working-directory: satisfactory-modding/FactoryGame/Plugins/Wwise
+        run: |
+          Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
+          7z x Wwise.7z
+          rm Wwise.7z
       
       - name: Compile project
         run: |
@@ -90,7 +99,7 @@ jobs:
           repository: 'mircearoata/UEAssetToolkit'
           
       - name: Copy AssetDumper to project
-        run: xcopy UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper /e /i /q
+        run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins -Recurse
           
       - name: Set AssetDumper BuildId
         run: |
