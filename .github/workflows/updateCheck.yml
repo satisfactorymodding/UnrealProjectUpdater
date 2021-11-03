@@ -27,7 +27,7 @@ jobs:
         run: gh release download --repo derrod/legendary -p "legendary.exe"
       
       - name: Download Satisfactory version file
-        run: legendary download ${{ appName }} --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+        run: legendary download ${{ env.appName }} --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
         id: gameVersion
@@ -42,6 +42,7 @@ jobs:
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
+          repository: 'mircearoata/satisfactory-modding'
 
       - name: Read current repo version
         id: currentVersion
@@ -52,7 +53,7 @@ jobs:
       - run: echo "::set-env name=currentVersion::${{steps.currentVersion.outputs.content}}"
       
       - name: Invoke workflow without inputs
-        if: gameVersion > currentVersion
+        if: env.gameVersion > env.currentVersion
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: updateHeaders
