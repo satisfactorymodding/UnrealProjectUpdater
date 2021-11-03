@@ -18,11 +18,11 @@ jobs:
 
       - name: Set appName to CrabEA
         if: github.event.inputs.branch == 'EarlyAccess'
-        run: echo "::set-env name=appName::CrabEA"
+        run: echo "appName=CrabEA" >> $GITHUB_ENV
       
       - name: Set appName to CrabTest
         if: github.event.inputs.branch == 'Experimental'
-        run: echo "::set-env name=appName::CrabTest"
+        run: echo "appName=CrabTest" >> $GITHUB_ENV
       
       - name: Invalid branch
         if: github.event.inputs.branch != 'Experimental' && github.event.inputs.branch != 'EarlyAccess'
@@ -41,7 +41,8 @@ jobs:
             path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
             prop_path: 'Changelist'
       
-      - run: echo "::set-env name=gameVersion::${{steps.gameVersion.outputs.prop}}"
+      - name: Set gameVersion variable
+        run: echo "gameVersion=${{steps.gameVersion.outputs.prop}}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
         with:
@@ -55,7 +56,9 @@ jobs:
         with:
           path: 'satisfactory-modding/Headers/currentVersion.txt'
       
-      - run: echo "::set-env name=currentVersion::${{steps.currentVersion.outputs.content}}"
+      
+      - name: Set gameVersion variable
+        run: echo "currentVersion=${{steps.currentVersion.outputs.content}}" >> $GITHUB_ENV
       
       - name: Invoke workflow without inputs
         if: env.gameVersion > env.currentVersion
