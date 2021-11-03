@@ -79,7 +79,7 @@ jobs:
         run: mkdir satisfactory-modding/FactoryGame/Plugins
         
       - name: Add Wwise
-        working-directory: satisfactory-modding/FactoryGame/Plugins/Wwise
+        working-directory: satisfactory-modding/FactoryGame/Plugins
         run: |
           Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
           7z x Wwise.7z
