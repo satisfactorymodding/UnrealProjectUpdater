@@ -61,19 +61,6 @@ jobs:
           mv lb\\win\\Engine Engine
           reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           .\\SetupScripts\\Register.bat
-      
-      - name: Extract headers
-        working-directory: Satisfactory/CommunityResources
-        run: 7z x Headers.zip -oHeaders
-      
-      - name: Compile tools
-        working-directory: satisfactory-modding/GenerationScripts
-        run: |
-          MSBuild.exe FixHeaders\\FixHeaders.sln
-          MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
-          
-      - name: Update headers and dummy implementations
-        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="ue4"
         
       - name: Create Plugins directory
         run: mkdir satisfactory-modding/FactoryGame/Plugins
@@ -84,12 +71,6 @@ jobs:
           Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
           7z x Wwise.7z
           rm Wwise.7z
-      
-      - name: Compile project
-        run: |
-          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Checkout UEAssetToolkit
         uses: actions/checkout@v2
@@ -100,10 +81,12 @@ jobs:
           
       - name: Copy AssetDumper to project
         run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins -Recurse
-          
-      - name: Compile AssetDumper
+      
+      - name: Compile project
         run: |
+          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Set AssetDumper BuildId
         run: |
@@ -117,10 +100,23 @@ jobs:
       - name: Run game and dump native classes
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpNativeClasses" -Wait
           
+      - name: Extract headers
+        working-directory: Satisfactory/CommunityResources
+        run: 7z x Headers.zip -oHeaders
+      
+      - name: Compile tools
+        working-directory: satisfactory-modding/GenerationScripts
+        run: |
+          MSBuild.exe FixHeaders\\FixHeaders.sln
+          MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
+          
+      - name: Update headers and dummy implementations
+        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="ue4"
+        
       - name: Run defaults generator
         run: py satisfactory-modding\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
       
-      - name: Compile project with default values
+      - name: Compile updated project
         run: |
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
