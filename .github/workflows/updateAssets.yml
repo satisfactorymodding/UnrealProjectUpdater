@@ -110,14 +110,14 @@ jobs:
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -Wait
       
       - name: Create ForceGeneratePackageNames
-        uses: DamianReeves/write-file-action
+        uses: DamianReeves/write-file-action@v1.0
         with:
           path: ForceGeneratePackageNames.txt
           contents: |
             echo "/Game/FactoryGame/Buildable/-Shared/Widgets/Widget_Output_Slot"
       
       - name: Create SkipSavePackagesFile
-        uses: DamianReeves/write-file-action
+        uses: DamianReeves/write-file-action@v1.0
         with:
           path: SkipSavePackagesFile.txt
           contents: |
