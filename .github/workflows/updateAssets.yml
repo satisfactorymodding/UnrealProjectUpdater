@@ -1,0 +1,133 @@
+name: Update assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The game branch (EarlyAccess/Experimental)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Validate branch name
+        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        run: |
+          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          exit 1
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
+      
+      - name: Download legendary
+        run: gh release download --repo derrod/legendary -p "legendary.exe"
+            
+      - name: Download jq
+        run: gh release download --repo stedolan/jq -p "jq-win64.exe"
+        
+      - name: Download Satisfactory EarlyAccess
+        if: github.event.inputs.branch == 'EarlyAccess'
+        run: .\legendary.exe download CrabEA --base-path . --game-folder="Satisfactory" -y
+      
+      - name: Download Satisfactory Experimental
+        if: github.event.inputs.branch == 'Experimental'
+        run: .\legendary.exe download CrabTest --base-path . --game-folder="Satisfactory" -y
+
+      - name: Checkout SML
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/sml-dev'
+          path: 'SML'
+          repository: 'satisfactorymodding/SatisfactoryModLoader'
+      
+      - name: Checkout satisfactory-modding
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          path: 'satisfactory-modding'
+          repository: 'mircearoata/satisfactory-modding'
+      
+      - name: Create Unreal Engine directory
+        run: mkdir ue4
+        
+      - name: Setup Unreal Engine
+        working-directory: ue4
+        run: |
+          gh release download --repo SatisfactoryModdingUE/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
+          7z x UnrealEngine-CSS-Editor-Win64.7z.001
+          rm UnrealEngine-CSS-Editor-Win64.7z*
+          mv lb\\win\\Engine Engine
+          reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+          .\\SetupScripts\\Register.bat
+        
+      - name: Copy latest game source
+        run: |
+          Remove-Item SML\Source\FactoryGame\Public -Recurse -Force -Confirm:$false -ErrorAction Ignore
+          Remove-Item SML\Source\FactoryGame\Private -Recurse -Force -Confirm:$false -ErrorAction Ignore
+          cp satisfactory-modding\FactoryGame\Source\FactoryGame\Public SML\Source\FactoryGame -Recurse
+          cp satisfactory-modding\FactoryGame\Source\FactoryGame\Private SML\Source\FactoryGame -Recurse
+        
+      - name: Create Plugins directory
+        run: mkdir satisfactory-modding/FactoryGame/Plugins
+        
+      - name: Add Wwise
+        working-directory: satisfactory-modding/FactoryGame/Plugins
+        run: |
+          Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
+          7z x Wwise.7z
+          rm Wwise.7z
+          
+      - name: Checkout UEAssetToolkit
+        uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/native-class-dumper'
+          path: 'UEAssetToolkit'
+          repository: 'mircearoata/UEAssetToolkit'
+          
+      - name: Copy UEAssetToolkit to project
+        run: |
+          cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins -Recurse
+          cp UEAssetToolkit\\AssetGenerator satisfactory-modding\\FactoryGame\\Plugins -Recurse
+      
+      - name: Compile project
+        run: |
+          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
+          
+      - name: Set AssetDumper BuildId
+        run: |
+          .\jq-win64.exe -r '.BuildId = ""SML""' satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
+          rm satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
+          mv FactoryGame-Win64-Shipping.modules satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64
+          
+      - name: Copy AssetDumper to game
+        run: cp SML\\Plugins\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
+          
+      - name: Run game and dump assets
+        run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -Wait
+      
+      - name: Create ForceGeneratePackageNames
+        uses: DamianReeves/write-file-action
+        with:
+          path: ForceGeneratePackageNames.txt
+          contents: |
+            echo "/Game/FactoryGame/Buildable/-Shared/Widgets/Widget_Output_Slot"
+      
+      - name: Create SkipSavePackagesFile
+        uses: DamianReeves/write-file-action
+        with:
+          path: SkipSavePackagesFile.txt
+          contents: |
+            echo "/Game/FactoryGame/Interface/UI/BPI_ShoppingList"
+            echo "/Game/FactoryGame/Unlocks/BPI_UnlockableInterface"
+      
+      - name: Run asset generator
+        run: UnrealEngine\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe $Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject -run=AssetGenerator -DumpDirectory=$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump -ForceGeneratePackageNames=$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt -SkipSavePackages=$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt -PublicProject -stdout -unattended -NoLogTimes
+          
+      - name: Restore registry
+        if: always()
+        working-directory: ue4
+        run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
