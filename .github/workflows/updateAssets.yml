@@ -70,10 +70,7 @@ jobs:
           Remove-Item SML\Source\FactoryGame\Public -Recurse -Force -Confirm:$false -ErrorAction Ignore
           Remove-Item SML\Source\FactoryGame\Private -Recurse -Force -Confirm:$false -ErrorAction Ignore
           cp satisfactory-modding\FactoryGame\Source\FactoryGame\Public SML\Source\FactoryGame -Recurse
-          cp satisfactory-modding\FactoryGame\Source\FactoryGame\Private SML\Source\FactoryGame -Recurse
-        
-      - name: Create Plugins directory
-        run: mkdir SML/Plugins
+          cp satisfactory-modding\FactoryGame\Source\F
         
       - name: Add Wwise
         working-directory: SML/Plugins
