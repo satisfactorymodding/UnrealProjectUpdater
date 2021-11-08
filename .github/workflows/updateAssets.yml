@@ -137,7 +137,7 @@ jobs:
         run: rm SML\\Content -Recurse
       
       - name: Run asset generator
-        run: .\\UnrealEngine\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe $Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject -run=AssetGenerator -DumpDirectory=$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump -ForceGeneratePackageNames=$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt -SkipSavePackages=$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt -PublicProject -stdout -unattended -NoLogTimes
+        run: .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe $Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject -run=AssetGenerator -DumpDirectory=$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump -ForceGeneratePackageNames=$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt -SkipSavePackages=$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt -PublicProject -stdout -unattended -NoLogTimes
           
       - name: Restore registry
         if: always()
