@@ -48,6 +48,9 @@ jobs:
           ref: 'refs/heads/${{ github.event.inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.3
       
       - name: Create Unreal Engine directory
         run: mkdir ue4
