@@ -1,4 +1,4 @@
-name: Update assets
+name: Update SML
 
 on:
   workflow_dispatch:
