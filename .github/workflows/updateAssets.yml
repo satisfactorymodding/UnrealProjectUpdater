@@ -116,7 +116,7 @@ jobs:
         run: cp SML\\Plugins\\AssetDumper Satisfactory\\FactoryGame\\Mods\\AssetDumper -Recurse
           
       - name: Run game and dump assets
-        run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -Wait
+        run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
       
       - name: Create ForceGeneratePackageNames
         uses: DamianReeves/write-file-action@v1.0
