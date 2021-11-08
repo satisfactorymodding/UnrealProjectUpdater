@@ -84,7 +84,7 @@ jobs:
         with:
           ref: 'refs/heads/native-class-dumper'
           path: 'UEAssetToolkit'
-          repository: 'mircearoata/UEAssetToolkit'
+          repository: 'Archengius/UEAssetToolkit'
           
       - name: Copy UEAssetToolkit to project
         run: |
