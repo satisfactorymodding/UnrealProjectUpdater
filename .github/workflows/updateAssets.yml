@@ -126,7 +126,9 @@ jobs:
         run: |
           echo "/Game/FactoryGame/Interface/UI/BPI_ShoppingList" >> SkipSavePackages.txt
           echo "/Game/FactoryGame/Unlocks/BPI_UnlockableInterface" >> SkipSavePackages.txt
-          # echo "/Game/FactoryGame/Interface/UI/BPI_GameUI" >> SkipSavePackages.txt
+          echo "/Game/FactoryGame/Interface/UI/InGame/Graph/BPW_Graph" >> SkipSavePackages.txt
+          echo "/Game/FactoryGame/-Shared/Blueprint/BP_OnlineHelpers" >> SkipSavePackages.txt
+          echo "/Game/FactoryGame/AvailabilityDependencies/BPI_AvailabilityDependencyInterface" >> SkipSavePackages.txt
       
       - name: Remove Content dir # temporary
         run: rm SML\\Content -Recurse
