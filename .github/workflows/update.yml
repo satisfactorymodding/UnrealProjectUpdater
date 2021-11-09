@@ -173,7 +173,7 @@ jobs:
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
       
       - name: Commit and push
-        dir: satisfactory-modding
+        working-directory: satisfactory-modding
         run: |
           git add .
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
@@ -315,7 +315,7 @@ jobs:
           .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
       - name: Commit and push
-        dir: SML
+        working-directory: SML
         run: |
           git add Source Content
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
