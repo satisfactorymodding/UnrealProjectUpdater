@@ -119,19 +119,14 @@ jobs:
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
       
       - name: Create ForceGeneratePackageNames
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ForceGeneratePackageNames.txt
-          contents: |
-            echo "/Game/FactoryGame/Buildable/-Shared/Widgets/Widget_Output_Slot"
+        run: |
+          echo "/Game/FactoryGame/Buildable/-Shared/Widgets/Widget_Output_Slot" >> ForceGeneratePackageNames.txt
       
       - name: Create SkipSavePackages
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: SkipSavePackages.txt
-          contents: |
-            echo "/Game/FactoryGame/Interface/UI/BPI_ShoppingList"
-            echo "/Game/FactoryGame/Unlocks/BPI_UnlockableInterface"
+        run: |
+          echo "/Game/FactoryGame/Interface/UI/BPI_ShoppingList" >> SkipSavePackages.txt
+          echo "/Game/FactoryGame/Unlocks/BPI_UnlockableInterface" >> SkipSavePackages.txt
+          # echo "/Game/FactoryGame/Interface/UI/BPI_GameUI" >> SkipSavePackages.txt
       
       - name: Remove Content dir # temporary
         run: rm SML\\Content -Recurse
