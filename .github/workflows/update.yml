@@ -162,7 +162,7 @@ jobs:
           MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
           
       - name: Update headers and dummy implementations
-        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ steps.gameVersion.outputs.prop }}" --uepath="ue4"
+        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ needs.check.outputs.gameVersion }}" --uepath="ue4"
         
       - name: Run defaults generator
         run: py satisfactory-modding\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
