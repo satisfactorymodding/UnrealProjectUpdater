@@ -96,6 +96,7 @@ jobs:
           ref: 'refs/heads/${{ github.event.inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.3
@@ -218,6 +219,7 @@ jobs:
           ref: 'refs/heads/sml-dev'
           path: 'SML'
           repository: 'satisfactorymodding/SatisfactoryModLoader'
+          token: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Checkout satisfactory-modding
         uses: actions/checkout@v2
