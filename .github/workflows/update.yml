@@ -13,6 +13,7 @@ jobs:
     runs-on: self-hosted
     outputs:
      shouldRun: ${{ steps.setShouldRun.outputs.shouldRun }}
+     gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
     steps:
       - name: Validate branch name
         if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
@@ -53,6 +54,10 @@ jobs:
         with:
           path: 'satisfactory-modding/Headers/currentVersion.txt'
       
+      - name: Set gameVersion
+        id: setGameVersion
+        run: echo "::set-output name=gameVersion::${{ steps.gameVersion.outputs.prop }}"
+      
       - name: Set shouldRun
         id: setShouldRun
         run: echo "::set-output name=shouldRun::${{ steps.gameVersion.outputs.prop > steps.currentVersion.outputs.content }}"
@@ -60,7 +65,7 @@ jobs:
   updateHeaders:
     runs-on: self-hosted
     needs: check
-    if: ${{needs.check.outputs.shouldRun}} == true
+    if: ${{ needs.check.outputs.shouldRun }} == true
     steps:
       - name: Validate branch name
         if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
@@ -84,13 +89,6 @@ jobs:
       - name: Download Satisfactory Experimental
         if: github.event.inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path . --game-folder="Satisfactory" -y
-
-      - name: Read Satisfactory version
-        id: gameVersion
-        uses: notiz-dev/github-action-json-property@release
-        with: 
-            path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
-            prop_path: 'Changelist'
 
       - name: Checkout satisfactory-modding
         uses: actions/checkout@v2
@@ -177,7 +175,7 @@ jobs:
       - name: Commit and push
         run: |
           git add .
-          git commit -m "Automated update to CL${{ steps.gameVersion.outputs.prop }}"
+          git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
       - name: Restore registry
@@ -188,7 +186,7 @@ jobs:
   updateSML:
     runs-on: self-hosted
     needs: [check, updateHeaders]
-    if: ${{needs.check.outputs.shouldRun}} == true
+    if: ${{ needs.check.outputs.shouldRun }} == true
     steps:
       - name: Validate branch name
         if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
@@ -318,7 +316,7 @@ jobs:
       - name: Commit and push
         run: |
           git add Source Content
-          git commit -m "Automated update to CL${{ steps.gameVersion.outputs.prop }}"
+          git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
       - name: Restore registry
