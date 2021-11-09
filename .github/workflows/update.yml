@@ -308,10 +308,7 @@ jobs:
           echo "/Game/FactoryGame/Interface/UI/InGame/Graph/BPW_Graph" >> SkipSavePackages.txt
           echo "/Game/FactoryGame/-Shared/Blueprint/BP_OnlineHelpers" >> SkipSavePackages.txt
           echo "/Game/FactoryGame/AvailabilityDependencies/BPI_AvailabilityDependencyInterface" >> SkipSavePackages.txt
-      
-      - name: Remove Content dir # temporary
-        run: rm SML\\Content -Recurse
-      
+            
       - name: Run asset generator
         run: |
           .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
