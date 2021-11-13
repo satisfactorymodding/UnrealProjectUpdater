@@ -61,6 +61,9 @@ jobs:
       - name: Set shouldRun
         id: setShouldRun
         run: echo "::set-output name=shouldRun::${{ steps.gameVersion.outputs.prop > steps.currentVersion.outputs.content }}"
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
      
   updateHeaders:
     runs-on: self-hosted
@@ -72,9 +75,6 @@ jobs:
         run: |
           echo "Invalid branch ${{ github.event.inputs.branch }}"
           exit 1
-      
-      - name: Cleanup
-        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
@@ -184,6 +184,9 @@ jobs:
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
   
   updateSML:
     runs-on: self-hosted
@@ -195,9 +198,6 @@ jobs:
         run: |
           echo "Invalid branch ${{ github.event.inputs.branch }}"
           exit 1
-      
-      - name: Cleanup
-        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
@@ -324,3 +324,6 @@ jobs:
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
