@@ -62,6 +62,9 @@ jobs:
       - name: Set isLatest
         id: setIsLatest
         run: echo "::set-output name=isLatest::${{ steps.gameVersion.outputs.prop == steps.currentVersion.outputs.content }}"
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
      
   updateHeaders:
     runs-on: self-hosted
@@ -185,3 +188,6 @@ jobs:
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+      
+      - name: Cleanup
+        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
