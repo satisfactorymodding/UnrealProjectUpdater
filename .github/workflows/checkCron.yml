@@ -1,0 +1,24 @@
+name: Check both branches cron
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+concurrency: cron_update
+
+jobs:
+# Disable Early Access until it is updated to U5
+#   earlyAccess:
+#     uses: mircearoata/satisfactory-modding-actions/.github/workflows/update.yml@master
+#     with:
+#       branch: EarlyAccess
+#     secrets:
+#       WWISE_URL: ${{ secrets.WWISE_URL }}
+#       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  experimental:
+    uses: mircearoata/satisfactory-modding-actions/.github/workflows/update.yml@master
+    with:
+      branch: Experimental
+    secrets:
+      WWISE_URL: ${{ secrets.WWISE_URL }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
