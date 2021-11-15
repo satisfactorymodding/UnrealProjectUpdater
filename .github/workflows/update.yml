@@ -82,7 +82,7 @@ jobs:
     if: ${{ needs.check.outputs.shouldRun }} == true
     steps:
       - name: Validate branch name
-        if: inputs.branch != 'EarlyAccess' && .inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
         run: |
           echo "Invalid branch ${{ inputs.branch }}"
           exit 1
