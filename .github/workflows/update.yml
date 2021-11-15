@@ -27,9 +27,9 @@ jobs:
      gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
     steps:
       - name: Validate branch name
-        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
         run: |
-          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          echo "Invalid branch ${{ inputs.branch }}"
           exit 1
       
       - name: Cleanup
@@ -39,11 +39,11 @@ jobs:
         run: gh release download --repo derrod/legendary -p "legendary.exe"
       
       - name: Download Satisfactory EarlyAccess version file
-        if: github.event.inputs.branch == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: .\legendary.exe download CrabEA --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental version file
-        if: github.event.inputs.branch == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path . --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
@@ -55,7 +55,7 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
 
@@ -82,9 +82,9 @@ jobs:
     if: ${{ needs.check.outputs.shouldRun }} == true
     steps:
       - name: Validate branch name
-        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && .inputs.branch != 'Experimental'
         run: |
-          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          echo "Invalid branch ${{ inputs.branch }}"
           exit 1
       
       - name: Download legendary
@@ -94,17 +94,17 @@ jobs:
         run: gh release download --repo stedolan/jq -p "jq-win64.exe"
       
       - name: Download Satisfactory EarlyAccess
-        if: github.event.inputs.branch == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: .\legendary.exe download CrabEA --base-path . --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental
-        if: github.event.inputs.branch == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path . --game-folder="Satisfactory" -y
 
       - name: Checkout satisfactory-modding
         uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -205,9 +205,9 @@ jobs:
     if: ${{ needs.check.outputs.shouldRun }} == true
     steps:
       - name: Validate branch name
-        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
         run: |
-          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          echo "Invalid branch ${{ inputs.branch }}"
           exit 1
       
       - name: Download legendary
@@ -217,11 +217,11 @@ jobs:
         run: gh release download --repo stedolan/jq -p "jq-win64.exe"
         
       - name: Download Satisfactory EarlyAccess
-        if: github.event.inputs.branch == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: .\legendary.exe download CrabEA --base-path . --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental
-        if: github.event.inputs.branch == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path . --game-folder="Satisfactory" -y
 
       - name: Checkout SML
@@ -235,7 +235,7 @@ jobs:
       - name: Checkout satisfactory-modding
         uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
 
