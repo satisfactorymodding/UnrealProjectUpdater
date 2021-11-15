@@ -7,6 +7,17 @@ on:
         description: 'The game branch (EarlyAccess/Experimental)'
         required: true
         type: string
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The game branch (EarlyAccess/Experimental)'
+        required: true
+        type: string
+    secrets:
+      WWISE_URL:
+        required: false
+      ACCESS_TOKEN:
+        required: false
 
 jobs:
   check:
