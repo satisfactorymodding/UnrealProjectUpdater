@@ -79,7 +79,7 @@ jobs:
   updateHeaders:
     runs-on: self-hosted
     needs: check
-    if: ${{ needs.check.outputs.shouldRun }} == true
+    if: needs.check.outputs.shouldRun == true
     steps:
       - name: Validate branch name
         if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
@@ -202,7 +202,7 @@ jobs:
   updateSML:
     runs-on: self-hosted
     needs: [check, updateHeaders]
-    if: ${{ needs.check.outputs.shouldRun }} == true
+    if: needs.check.outputs.shouldRun == true
     steps:
       - name: Validate branch name
         if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
