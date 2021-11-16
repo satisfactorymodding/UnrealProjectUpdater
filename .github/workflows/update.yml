@@ -195,6 +195,15 @@ jobs:
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+          
+      - name: Store native class dump
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: nativeClassDump
+          path: |
+            Satisfactory\\FactoryGame\\NativeClassDump
+          retention-days: 2
       
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
@@ -335,6 +344,15 @@ jobs:
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+          
+      - name: Store asset dump
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: assetDump
+          path: |
+            Satisfactory\\FactoryGame\\AssetDump
+          retention-days: 2
       
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
