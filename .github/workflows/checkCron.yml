@@ -2,7 +2,7 @@ name: Check both branches cron
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 * * * *'
 
 concurrency: cron_update
 
