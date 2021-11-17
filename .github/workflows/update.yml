@@ -196,13 +196,17 @@ jobs:
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           
+      - name: Archive native class dump
+        if: always()
+        run: 7z a NativeClassDump.7z Satisfactory\FactoryGame\NativeClassDump
+          
       - name: Store native class dump
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: nativeClassDump
+          name: NativeClassDump
           path: |
-            Satisfactory\\FactoryGame\\NativeClassDump
+            NativeClassDump.7z
           retention-days: 2
       
       - name: Cleanup
@@ -345,13 +349,17 @@ jobs:
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           
+      - name: Archive asset dump
+        if: always()
+        run: 7z a AssetDump.7z Satisfactory\FactoryGame\AssetDump
+          
       - name: Store asset dump
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: assetDump
+          name: AssetDump
           path: |
-            Satisfactory\\FactoryGame\\AssetDump
+            AssetDump.7z
           retention-days: 2
       
       - name: Cleanup
