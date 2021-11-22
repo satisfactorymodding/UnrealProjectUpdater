@@ -251,6 +251,11 @@ jobs:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
+      
+      - name: Checkout satisfactory-modding-actions
+        uses: actions/checkout@v2
+        with:
+          path: 'satisfactory-modding-actions'
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.3
@@ -320,22 +325,10 @@ jobs:
           
       - name: Run game and dump assets
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
-      
-      - name: Create ForceGeneratePackageNames
-        run: |
-          echo "/Game/FactoryGame/Buildable/-Shared/Widgets/Widget_Output_Slot" >> ForceGeneratePackageNames.txt
-      
-      - name: Create SkipSavePackages
-        run: |
-          echo "/Game/FactoryGame/Interface/UI/BPI_ShoppingList" >> SkipSavePackages.txt
-          echo "/Game/FactoryGame/Unlocks/BPI_UnlockableInterface" >> SkipSavePackages.txt
-          echo "/Game/FactoryGame/Interface/UI/InGame/Graph/BPW_Graph" >> SkipSavePackages.txt
-          echo "/Game/FactoryGame/-Shared/Blueprint/BP_OnlineHelpers" >> SkipSavePackages.txt
-          echo "/Game/FactoryGame/AvailabilityDependencies/BPI_AvailabilityDependencyInterface" >> SkipSavePackages.txt
             
       - name: Run asset generator
         run: |
-          .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\ForceGeneratePackageNames.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
+          .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
       - name: Commit and push
         working-directory: SML
