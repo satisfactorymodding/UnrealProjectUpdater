@@ -1,0 +1,5 @@
+/Game/FactoryGame/Interface/UI/BPI_ShoppingList
+/Game/FactoryGame/Unlocks/BPI_UnlockableInterface
+/Game/FactoryGame/Interface/UI/InGame/Graph/BPW_Graph
+/Game/FactoryGame/-Shared/Blueprint/BP_OnlineHelpers
+/Game/FactoryGame/AvailabilityDependencies/BPI_AvailabilityDependencyInterface
