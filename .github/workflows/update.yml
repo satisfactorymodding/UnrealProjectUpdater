@@ -330,6 +330,15 @@ jobs:
         run: |
           .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
+      - name: Checkout DavidHGillen/SFModdingProject
+        uses: actions/checkout@v2
+        with:
+          path: 'BeaverAssets'
+          repository: 'DavidHGillen/SFModdingProject'
+      
+      - name: Copy Beaver Assets
+        run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\$_ .\\SML\\Content\\$_ }
+      
       - name: Commit and push
         working-directory: SML
         run: |
