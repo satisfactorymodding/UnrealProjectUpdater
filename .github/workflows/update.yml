@@ -338,6 +338,10 @@ jobs:
       
       - name: Copy Beaver Assets
         run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\$_ .\\SML\\Content\\$_ }
+        
+      - name: Package SML
+        run: |
+          .\\ue4\\Engine\\Build\\BatchFiles\\RunUAT.bat -ScriptsForProject="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" PackagePlugin -Project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -PluginName="SML"
       
       - name: Commit and push
         working-directory: SML
