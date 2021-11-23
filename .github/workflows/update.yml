@@ -334,7 +334,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: 'BeaverAssets'
-          repository: 'DavidHGillen/SFModdingProject'
+          repository: 'DavidHGillen/SatisfactoryModLoader'
+          ref: 'refs/heads/sml-dev'
       
       - name: Copy Beaver Assets
         run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\$_ .\\SML\\Content\\$_ }
