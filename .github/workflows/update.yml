@@ -338,7 +338,7 @@ jobs:
           ref: 'refs/heads/sml-dev'
       
       - name: Copy Beaver Assets
-        run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\$_ .\\SML\\Content\\$_ }
+        run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\Content\\$_ .\\SML\\Content\\$_ }
         
       - name: Package SML
         run: |
