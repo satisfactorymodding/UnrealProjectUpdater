@@ -27,19 +27,12 @@ jobs:
     needs: experimental
     if: always() && needs.experimental.result == 'failure'
     steps:
-      - id: getWorkflowFilename
-        name: Get workflow filename
-        uses: actions/github-script@0.9.0
-        with:
-          script: |
-            const filepathSplit = context.payload.workflow.split('/');
-            core.setOutput('filename', filepathSplit[filepathSplit.length - 1])
       - uses: octokit/request-action@v2.x
         name: Disable cron workflow
         with:
           route: PUT /repos/{repo}/actions/workflows/{workflow_id}/disable
           repo: ${{ github.repository }}
-          workflow_id: ${{ steps.getWorkflowFilename.outputs.filename }}
+          workflow_id: checkCron.yml # The workflow filename
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
