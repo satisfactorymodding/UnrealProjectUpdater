@@ -241,7 +241,7 @@ jobs:
       - name: Checkout SML
         uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/sml-dev'
+          ref: 'refs/heads/auto-header-update'
           path: 'SML'
           repository: 'satisfactorymodding/SatisfactoryModLoader'
           token: ${{ secrets.ACCESS_TOKEN }}
