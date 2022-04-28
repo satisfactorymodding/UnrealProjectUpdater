@@ -3,6 +3,7 @@ name: Check both branches cron
 on:
   schedule:
     - cron: '0 * * * *'
+  workflow_dispatch:
 
 concurrency: cron_update
 
