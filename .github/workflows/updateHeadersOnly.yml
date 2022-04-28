@@ -180,6 +180,7 @@ jobs:
       - name: Commit and push
         working-directory: satisfactory-modding
         run: |
+          git rm -r --cached *
           git add .
           git commit -m "Rerun update on CL${{ needs.check.outputs.gameVersion }}"
           git push
