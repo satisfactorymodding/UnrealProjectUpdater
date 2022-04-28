@@ -187,6 +187,7 @@ jobs:
       - name: Commit and push
         working-directory: satisfactory-modding
         run: |
+          git rm -r --cached *
           git add .
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
@@ -347,6 +348,7 @@ jobs:
       - name: Commit and push
         working-directory: SML
         run: |
+          git rm -r --cached Source Content
           git add Source Content
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
