@@ -8,25 +8,27 @@ on:
 concurrency: cron_update
 
 jobs:
-# Disable Early Access until it is updated to U5
-#   earlyAccess:
-#     uses: mircearoata/satisfactory-modding-actions/.github/workflows/update.yml@master
-#     with:
-#       branch: EarlyAccess
-#     secrets:
-#       WWISE_URL: ${{ secrets.WWISE_URL }}
-#       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  experimental:
-    uses: mircearoata/satisfactory-modding-actions/.github/workflows/update.yml@master
+  # TODO check for EXP->EA merges and git merge headers as well
+  headers:
+    uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateHeaders.yml@master
     with:
       branch: Experimental
     secrets:
       WWISE_URL: ${{ secrets.WWISE_URL }}
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  experimentalSuccessCheck:
+  SML:
+    uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateSML.yml@master
+    needs: [headers]
+    if: always() && (needs.headers.result == 'success' || needs.headers.result == 'skipped')
+    with:
+      branch: Experimental
+    secrets:
+      WWISE_URL: ${{ secrets.WWISE_URL }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  successCheck:
     runs-on: self-hosted
-    needs: experimental
-    if: always() && needs.experimental.result == 'failure'
+    needs: [headers, SML]
+    if: always() && (needs.headers.result == 'failure' || needs.SML.result == 'failure')
     steps:
       - uses: octokit/request-action@v2.x
         name: Disable cron workflow

@@ -1,5 +1,4 @@
-
-name: Rerun header update in satisfactory-modding
+name: Check and update mircearoata/satisfactory-modding
 
 on:
   workflow_dispatch:
@@ -8,18 +7,29 @@ on:
         description: 'The game branch (EarlyAccess/Experimental)'
         required: true
         type: string
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The game branch (EarlyAccess/Experimental)'
+        required: true
+        type: string
+    secrets:
+      WWISE_URL:
+        required: false
+      ACCESS_TOKEN:
+        required: false
 
 jobs:
   check:
     runs-on: self-hosted
     outputs:
-     isLatest: ${{ steps.setIsLatest.outputs.isLatest }}
+     shouldRun: ${{ steps.setShouldRun.outputs.shouldRun }}
      gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
     steps:
       - name: Validate branch name
-        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
         run: |
-          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          echo "Invalid branch ${{ inputs.branch }}"
           exit 1
       
       - name: Cleanup
@@ -29,11 +39,11 @@ jobs:
         run: gh release download --repo derrod/legendary -p "legendary.exe"
       
       - name: Download Satisfactory EarlyAccess version file
-        if: github.event.inputs.branch == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: .\legendary.exe download CrabEA --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental version file
-        if: github.event.inputs.branch == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
@@ -45,12 +55,12 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
 
       - name: Read current repo version
-        id: currentVersion
+        id: currentHeadersVersion
         uses: juliangruber/read-file-action@v1
         with:
           path: 'satisfactory-modding/Headers/currentVersion.txt'
@@ -59,9 +69,9 @@ jobs:
         id: setGameVersion
         run: echo "::set-output name=gameVersion::${{ steps.gameVersion.outputs.prop }}"
       
-      - name: Set isLatest
-        id: setIsLatest
-        run: echo "::set-output name=isLatest::${{ steps.gameVersion.outputs.prop == steps.currentVersion.outputs.content }}"
+      - name: Set shouldRun
+        id: setShouldRun
+        run: echo "::set-output name=shouldRun::${{ steps.gameVersion.outputs.prop > steps.currentHeadersVersion.outputs.content }}"
       
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
@@ -69,16 +79,13 @@ jobs:
   updateHeaders:
     runs-on: self-hosted
     needs: check
-    if: ${{ needs.check.outputs.isLatest }} == true
+    if: needs.check.outputs.shouldRun == 'true'
     steps:
       - name: Validate branch name
-        if: github.event.inputs.branch != 'EarlyAccess' && github.event.inputs.branch != 'Experimental'
+        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
         run: |
-          echo "Invalid branch ${{ github.event.inputs.branch }}"
+          echo "Invalid branch ${{ inputs.branch }}"
           exit 1
-      
-      - name: Cleanup
-        run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
@@ -87,17 +94,17 @@ jobs:
         run: gh release download --repo stedolan/jq -p "jq-win64.exe"
       
       - name: Download Satisfactory EarlyAccess
-        if: github.event.inputs.branch == 'EarlyAccess'
+        if: inputs.branch == 'EarlyAccess'
         run: .\legendary.exe download CrabEA --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental
-        if: github.event.inputs.branch == 'Experimental'
+        if: inputs.branch == 'Experimental'
         run: .\legendary.exe download CrabTest --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
 
       - name: Checkout satisfactory-modding
         uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/${{ github.event.inputs.branch }}'
+          ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -131,7 +138,7 @@ jobs:
       - name: Checkout UEAssetToolkit
         uses: actions/checkout@v2
         with:
-          ref: 'refs/heads/native-class-dumper'
+          ref: 'refs/heads/main'
           path: 'UEAssetToolkit'
           repository: 'mircearoata/UEAssetToolkit'
           
@@ -182,13 +189,26 @@ jobs:
         run: |
           git rm -r --cached *
           git add .
-          git commit -m "Rerun update on CL${{ needs.check.outputs.gameVersion }}"
+          git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
       - name: Restore registry
         if: always()
         working-directory: ue4
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
+          
+      - name: Archive native class dump
+        if: always()
+        run: 7z a NativeClassDump.7z Satisfactory\FactoryGame\NativeClassDump
+          
+      - name: Store native class dump
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: NativeClassDump
+          path: |
+            NativeClassDump.7z
+          retention-days: 7
       
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
