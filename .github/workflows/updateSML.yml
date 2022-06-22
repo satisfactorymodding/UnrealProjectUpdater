@@ -154,7 +154,15 @@ jobs:
         run: |
           Remove-Item SML\Source\FactoryGame -Recurse -Force -Confirm:$false -ErrorAction Ignore
           cp satisfactory-modding\FactoryGame\Source\FactoryGame SML\Source -Recurse
-          echo ${{needs.check.outputs.gameVersion}} > SML\Source\FactoryGame\currentVersion.txt
+          echo ${{ needs.check.outputs.gameVersion }} > SML\Source\FactoryGame\currentVersion.txt
+          
+      - name: Update SML targetGameVersion
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          include: "SML/Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp"
+          find: "(const long targetGameVersion = )\\d+;"
+          replace: "$1${{ needs.check.outputs.gameVersion }};"
+          regex: true
         
       - name: Add Wwise
         working-directory: SML/Plugins
