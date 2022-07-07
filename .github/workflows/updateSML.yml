@@ -154,7 +154,7 @@ jobs:
         run: |
           Remove-Item SML\Source\FactoryGame -Recurse -Force -Confirm:$false -ErrorAction Ignore
           cp satisfactory-modding\FactoryGame\Source\FactoryGame SML\Source -Recurse
-          echo ${{ needs.check.outputs.gameVersion }} > SML\Source\FactoryGame\currentVersion.txt
+          echo ${{ needs.check.outputs.gameVersion }} | Out-File SML\Source\FactoryGame\currentVersion.txt -Encoding utf8
           
       - name: Update SML targetGameVersion
         uses: mingjun97/file-regex-replace@v1
