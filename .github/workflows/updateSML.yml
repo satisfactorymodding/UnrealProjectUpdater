@@ -232,6 +232,7 @@ jobs:
         run: |
           git rm -r --cached Source Content
           git add Source Content
+          git add Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
