@@ -131,6 +131,7 @@ jobs:
       - name: Add Wwise
         working-directory: satisfactory-modding/FactoryGame/Plugins
         run: |
+          $ProgressPreference = 'SilentlyContinue'
           Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
           7z x Wwise.7z
           rm Wwise.7z
