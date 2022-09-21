@@ -40,11 +40,11 @@ jobs:
       
       - name: Download Satisfactory EarlyAccess version file
         if: inputs.branch == 'EarlyAccess'
-        run: .\legendary.exe download CrabEA --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+        run: .\legendary.exe download CrabEA --no-https --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental version file
         if: inputs.branch == 'Experimental'
-        run: .\legendary.exe download CrabTest --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
+        run: .\legendary.exe download CrabTest --no-https --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
 
       - name: Read Satisfactory version
         id: gameVersion
@@ -109,11 +109,11 @@ jobs:
         
       - name: Download Satisfactory EarlyAccess
         if: inputs.branch == 'EarlyAccess'
-        run: .\legendary.exe download CrabEA --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
+        run: .\legendary.exe download CrabEA --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental
         if: inputs.branch == 'Experimental'
-        run: .\legendary.exe download CrabTest --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
+        run: .\legendary.exe download CrabTest --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
 
       - name: Checkout SML
         uses: actions/checkout@v2
