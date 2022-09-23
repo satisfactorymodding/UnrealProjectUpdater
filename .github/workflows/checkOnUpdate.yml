@@ -1,11 +1,12 @@
-name: Check both branches cron
+name: Check experimental
 
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types: [satisfactory-experimental-update]
+  
 
-concurrency: cron_update
+concurrency: update
 
 jobs:
   # TODO check for EXP->EA merges and git merge headers as well
@@ -25,17 +26,4 @@ jobs:
     secrets:
       WWISE_URL: ${{ secrets.WWISE_URL }}
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  successCheck:
-    runs-on: self-hosted
-    needs: [headers, SML]
-    if: always() && (needs.headers.result == 'failure' || needs.SML.result == 'failure')
-    steps:
-      - uses: octokit/request-action@v2.x
-        name: Disable cron workflow
-        with:
-          route: PUT /repos/{repo}/actions/workflows/{workflow_id}/disable
-          repo: ${{ github.repository }}
-          workflow_id: checkCron.yml # The workflow filename
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
