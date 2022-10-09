@@ -214,7 +214,7 @@ jobs:
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
       
       - name: Dump configs from pak file
-        run: .\\ue4\Engine\\Binaries\\Win64\\UnrealPak.exe -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Pak\\FactoryGame-WindowsNoEditor.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
+        run: .\\ue4\Engine\\Binaries\\Win64\\UnrealPak.exe -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-WindowsNoEditor.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
       
       - name: Read DefaultEngine.ini
         id: defaultEngineIni
