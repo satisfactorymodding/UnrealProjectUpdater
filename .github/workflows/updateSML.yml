@@ -241,6 +241,22 @@ jobs:
         run: |
           .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
+      - name: Remove outdated assets
+        run: |
+          .\\ue4\Engine\\Binaries\\Win64\\UnrealPak.exe -List -csv="$Env:GITHUB_WORKSPACE\\pakContents.csv" -LogCmds="LogPakFile Warning" $Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-WindowsNoEditor.pak
+          $pakData = Import-Csv .\pakContents.csv
+          $pakFiles = $pakData | ForEach-Object { $_.Filename }
+          $files = @()
+          $prefix = "FactoryGame/Content/"
+          foreach ($file in $pakFiles) {
+              $filename = $file
+              if ($filename.StartsWith($prefix)) {
+                  $filename = $filename.Substring($prefix.length)
+                  $files += ($Env:GITHUB_WORKSPACE + "\SML\Content\" + $filename).replace('/', '\')
+              }
+          }
+          dir -rec SML\Content\*.* | Where-Object { $files -notcontains $_.Fullname } | Remove-Item
+      
       - name: Checkout DavidHGillen/SFModdingProject
         uses: actions/checkout@v2
         with:
