@@ -37,6 +37,8 @@ jobs:
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Download Satisfactory EarlyAccess version file
         if: inputs.branch == 'EarlyAccess'
@@ -89,9 +91,13 @@ jobs:
       
       - name: Download legendary
         run: gh release download --repo derrod/legendary -p "legendary.exe"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Download jq
         run: gh release download --repo stedolan/jq -p "jq-win64.exe"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Download Satisfactory EarlyAccess
         if: inputs.branch == 'EarlyAccess'
@@ -124,6 +130,8 @@ jobs:
           mv lb\\win\\Engine Engine
           reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           .\\SetupScripts\\Register.bat
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         
       - name: Create Plugins directory
         run: mkdir satisfactory-modding/FactoryGame/Plugins
