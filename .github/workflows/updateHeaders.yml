@@ -55,7 +55,7 @@ jobs:
             path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
             prop_path: 'Changelist'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
@@ -108,7 +108,7 @@ jobs:
         run: .\legendary.exe download CrabTest --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
 
       - name: Checkout satisfactory-modding
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
@@ -145,7 +145,7 @@ jobs:
           rm Wwise.7z
           
       - name: Checkout UEAssetToolkit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/dev'
           path: 'UEAssetToolkit'

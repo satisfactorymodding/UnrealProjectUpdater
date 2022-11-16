@@ -55,14 +55,14 @@ jobs:
             path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
             prop_path: 'Changelist'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
       
       - name: Checkout SML
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/auto-header-update'
           path: 'SML'
@@ -122,7 +122,7 @@ jobs:
         run: .\legendary.exe download CrabTest --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
 
       - name: Checkout SML
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/auto-header-update'
           path: 'SML'
@@ -130,14 +130,14 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Checkout satisfactory-modding
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
           repository: 'mircearoata/satisfactory-modding'
       
       - name: Checkout satisfactory-modding-actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           path: 'satisfactory-modding-actions'
 
@@ -183,7 +183,7 @@ jobs:
           rm Wwise.7z
           
       - name: Checkout UEAssetToolkit
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: 'refs/heads/dev'
           path: 'UEAssetToolkit'
@@ -266,7 +266,7 @@ jobs:
           dir -rec SML\Content\*.* | Where-Object { $files -notcontains $_.Fullname } | Remove-Item
       
       - name: Checkout DavidHGillen/SFModdingProject
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           path: 'BeaverAssets'
           repository: 'DavidHGillen/SatisfactoryModLoader'
