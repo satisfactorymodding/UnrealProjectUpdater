@@ -69,11 +69,11 @@ jobs:
       
       - name: Set gameVersion
         id: setGameVersion
-        run: echo "gameVersion=${{ steps.gameVersion.outputs.prop }}" >> $GITHUB_OUTPUT
+        run: echo "gameVersion=${{ steps.gameVersion.outputs.prop }}" >> $Env:GITHUB_OUTPUT
       
       - name: Set shouldRun
         id: setShouldRun
-        run: echo "shouldRun=${{ steps.gameVersion.outputs.prop > steps.currentHeadersVersion.outputs.content }}" >> $GITHUB_OUTPUT
+        run: echo "shouldRun=${{ steps.gameVersion.outputs.prop > steps.currentHeadersVersion.outputs.content }}" >> $Env:GITHUB_OUTPUT
       
       - name: Cleanup
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
