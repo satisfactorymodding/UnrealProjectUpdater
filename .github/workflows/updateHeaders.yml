@@ -133,9 +133,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         
-      - name: Create Plugins directory
-        run: mkdir satisfactory-modding/FactoryGame/Plugins
-        
       - name: Add Wwise
         working-directory: satisfactory-modding/FactoryGame/Plugins
         run: |
