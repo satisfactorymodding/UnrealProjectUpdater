@@ -204,6 +204,13 @@ jobs:
       - name: Wait for manual fixes
         if: failure() && steps.compile.outcome == 'failure'
         run: while (!(Test-Path ($Env:GITHUB_WORKSPACE + "\SMLFIX.txt"))) { Start-Sleep -Seconds 10 }
+      
+      - name: Compile project after fixes
+        if: steps.compile.outcome == 'failure'
+        run: |
+          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
+          MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Set SML BuildId
         run: |
