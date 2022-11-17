@@ -195,15 +195,10 @@ jobs:
           cp UEAssetToolkit\\AssetGenerator SML\\Plugins -Recurse
       
       - name: Compile project
-        id: compile
         run: |
           .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
-        
-      - name: Wait for manual fixes
-        if: failure() && steps.compile.outcome == 'failure'
-        run: while (!(Test-Path ($Env:GITHUB_WORKSPACE + "\SMLFIX.txt"))) { Start-Sleep -Seconds 10 }
           
       - name: Set SML BuildId
         run: |
@@ -292,11 +287,6 @@ jobs:
           git add Config/DefaultEngine.ini
           git add Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
-          if (Test-Path ($Env:GITHUB_WORKSPACE + "\SMLFIX.txt")) {
-            $message = Get-Content ($Env:GITHUB_WORKSPACE + "\SMLFIX.txt")
-            git add Plugins/SML
-            git commit -m "$message"
-          }
           git push
           
       - name: Restore registry
