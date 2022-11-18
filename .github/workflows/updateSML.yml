@@ -244,6 +244,7 @@ jobs:
         with:
           include: "SML/Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp"
           regex: '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
+          flags: 'gms'
           replacement: ${{ steps.collisionProfiles.outputs.match }}
       
       - name: Run asset generator
