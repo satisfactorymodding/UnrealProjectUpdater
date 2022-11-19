@@ -287,7 +287,7 @@ jobs:
       - name: Update SML targetGameVersion
         uses: mingjun97/file-regex-replace@v1
         with:
-          include: "SML[\/\\]Plugins[\/\\]SML[\/\\]Source[\/\\]SML[\/\\]Private[\/\\]SatisfactoryModLoader.cpp"
+          include: 'SML[\/\\]Plugins[\/\\]SML[\/\\]Source[\/\\]SML[\/\\]Private[\/\\]SatisfactoryModLoader.cpp'
           regex: '(const long targetGameVersion = )\d+;'
           replacement: "$1${{ needs.check.outputs.gameVersion }};"
       
