@@ -242,7 +242,7 @@ jobs:
       - name: Update CollisionProfiles
         uses: mingjun97/file-regex-replace@v1
         with:
-          include: "SML/Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp"
+          include: "SML/Config/DefaultEngine.ini"
           regex: '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
           flags: 'gms'
           replacement: ${{ steps.collisionProfiles.outputs.match }}
