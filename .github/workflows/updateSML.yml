@@ -266,16 +266,12 @@ jobs:
               }
           }
           dir -rec SML\Content\*.* | Where-Object { $files -notcontains $_.Fullname } | Remove-Item
-      
-      - name: Checkout DavidHGillen/SFModdingProject
-        uses: actions/checkout@v2
-        with:
-          path: 'BeaverAssets'
-          repository: 'DavidHGillen/SatisfactoryModLoader'
-          ref: 'refs/heads/sml-dev'
-      
-      - name: Copy Beaver Assets
-        run: Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt | Foreach-Object { cp .\\BeaverAssets\\Content\\$_ .\\SML\\Content\\$_ }
+            
+      - name: Revert handmade assets
+        run: |
+          $beaverAssets = Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt 
+          cd SML
+          $beaverAssets | Foreach-Object { git reset --hard Content/$_ }
         
       - name: Undo "Replace SML with hooks-only version"
         run: |
