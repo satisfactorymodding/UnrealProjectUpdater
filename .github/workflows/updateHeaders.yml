@@ -55,7 +55,7 @@ jobs:
             path: 'Satisfactory/Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version'
             prop_path: 'Changelist'
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
@@ -108,7 +108,7 @@ jobs:
         run: .\legendary.exe download CrabTest --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
 
       - name: Checkout satisfactory-modding
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'satisfactory-modding'
@@ -116,7 +116,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1.3
+        uses: microsoft/setup-msbuild@v1
       
       - name: Create Unreal Engine directory
         run: mkdir ue4
@@ -142,7 +142,7 @@ jobs:
           rm Wwise.7z
           
       - name: Checkout UEAssetToolkit
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: 'refs/heads/dev'
           path: 'UEAssetToolkit'
