@@ -119,15 +119,14 @@ jobs:
         uses: microsoft/setup-msbuild@v1
       
       - name: Create Unreal Engine directory
-        run: mkdir ue4
+        run: mkdir ue
         
       - name: Setup Unreal Engine
-        working-directory: ue4
+        working-directory: ue
         run: |
-          gh release download --repo SatisfactoryModdingUE/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
+          gh release download --repo satisfactorymodding/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
           7z x UnrealEngine-CSS-Editor-Win64.7z.001
           rm UnrealEngine-CSS-Editor-Win64.7z*
-          mv lb\\win\\Engine Engine
           reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           .\\SetupScripts\\Register.bat
         env:
@@ -149,22 +148,22 @@ jobs:
           repository: 'mircearoata/UEAssetToolkit'
           
       - name: Copy AssetDumper to project
-        run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Plugins -Recurse
+        run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Mods -Recurse
       
       - name: Compile project
         run: |
-          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          .\\ue\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Set AssetDumper BuildId
         run: |
-          .\jq-win64.exe -r '.BuildId = ""SML""' satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
-          rm satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
-          mv FactoryGame-Win64-Shipping.modules satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper\\Binaries\\Win64
+          .\jq-win64.exe -r '.BuildId = ""SML""' satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
+          rm satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
+          mv FactoryGame-Win64-Shipping.modules satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64
           
       - name: Copy AssetDumper to game
-        run: cp satisfactory-modding\\FactoryGame\\Plugins\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
+        run: cp satisfactory-modding\\FactoryGame\\Mods\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
           
       - name: Run game and dump native classes
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpNativeClasses" -Wait
@@ -180,7 +179,7 @@ jobs:
           MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
           
       - name: Update headers and dummy implementations
-        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ needs.check.outputs.gameVersion }}" --uepath="ue4"
+        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ needs.check.outputs.gameVersion }}" --uepath="ue"
         
       - name: Run defaults generator
         run: py satisfactory-modding\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
@@ -200,7 +199,7 @@ jobs:
           
       - name: Restore registry
         if: always()
-        working-directory: ue4
+        working-directory: ue
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           
       - name: Archive native class dump

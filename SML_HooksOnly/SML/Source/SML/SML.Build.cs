@@ -5,7 +5,7 @@ using System.IO;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using Tools.DotNETCommon;
+using EpicGames.Core;
 
 public class SML : ModuleRules
 {

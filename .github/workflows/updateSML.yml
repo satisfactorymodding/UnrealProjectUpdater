@@ -145,12 +145,12 @@ jobs:
         uses: microsoft/setup-msbuild@v1
       
       - name: Create Unreal Engine directory
-        run: mkdir ue4
+        run: mkdir ue
         
       - name: Setup Unreal Engine
-        working-directory: ue4
+        working-directory: ue
         run: |
-          gh release download --repo SatisfactoryModdingUE/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
+          gh release download --repo satisfactorymodding/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
           7z x UnrealEngine-CSS-Editor-Win64.7z.001
           rm UnrealEngine-CSS-Editor-Win64.7z*
           mv lb\\win\\Engine Engine
@@ -184,46 +184,46 @@ jobs:
           
       - name: Copy UEAssetToolkit to project
         run: |
-          cp UEAssetToolkit\\AssetDumper SML\\Plugins -Recurse
-          cp UEAssetToolkit\\AssetGenerator SML\\Plugins -Recurse
+          cp UEAssetToolkit\\AssetDumper SML\\Mods -Recurse
+          cp UEAssetToolkit\\AssetGenerator SML\\Mods -Recurse
           
       - name: Replace SML with hooks-only version
         run: |
           mkdir SML_TEMP
-          mv SML\Plugins\SML SML_TEMP\
-          mv SML\Plugins\SMLEditor SML_TEMP\
-          cp satisfactory-modding-actions\SML_HooksOnly\SML SML\Plugins -Recurse
-          cp satisfactory-modding-actions\SML_HooksOnly\SMLEditor SML\Plugins -Recurse
+          mv SML\Mods\SML SML_TEMP\
+          mv SML\Mods\SMLEditor SML_TEMP\
+          cp satisfactory-modding-actions\SML_HooksOnly\SML SML\Mods -Recurse
+          cp satisfactory-modding-actions\SML_HooksOnly\SMLEditor SML\Mods -Recurse
       
       - name: Compile project
         run: |
-          .\\ue4\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
+          .\\ue\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Set SML BuildId
         run: |
-          .\jq-win64.exe -r '.BuildId = ""SML""' SML\\Plugins\\SML\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
-          rm SML\\Plugins\\SML\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
-          mv FactoryGame-Win64-Shipping.modules SML\\Plugins\\SML\\Binaries\\Win64
+          .\jq-win64.exe -r '.BuildId = ""SML""' SML\\Mods\\SML\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
+          rm SML\\Mods\\SML\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
+          mv FactoryGame-Win64-Shipping.modules SML\\Mods\\SML\\Binaries\\Win64
       
       - name: Set AssetDumper BuildId
         run: |
-          .\jq-win64.exe -r '.BuildId = ""SML""' SML\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
-          rm SML\\Plugins\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
-          mv FactoryGame-Win64-Shipping.modules SML\\Plugins\\AssetDumper\\Binaries\\Win64
+          .\jq-win64.exe -r '.BuildId = ""SML""' SML\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
+          rm SML\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
+          mv FactoryGame-Win64-Shipping.modules SML\\Mods\\AssetDumper\\Binaries\\Win64
           
       - name: Copy SML to game
-        run: cp SML\\Plugins\\SML Satisfactory\\FactoryGame\\Mods\\SML -Recurse
+        run: cp SML\\Mods\\SML Satisfactory\\FactoryGame\\Mods\\SML -Recurse
           
       - name: Copy AssetDumper to game
-        run: cp SML\\Plugins\\AssetDumper Satisfactory\\FactoryGame\\Mods\\AssetDumper -Recurse
+        run: cp SML\\Mods\\AssetDumper Satisfactory\\FactoryGame\\Mods\\AssetDumper -Recurse
           
       - name: Run game and dump assets
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -nullrhi -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
       
       - name: Dump configs from pak file
-        run: .\\ue4\Engine\\Binaries\\Win64\\UnrealPak.exe -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-WindowsNoEditor.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
+        run: .\\ue\Engine\\Binaries\\Win64\\UnrealPak.exe -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
       
       - name: Read DefaultEngine.ini
         id: defaultEngineIni
@@ -249,11 +249,11 @@ jobs:
       
       - name: Run asset generator
         run: |
-          .\\ue4\\Engine\\Binaries\\Win64\\UE4Editor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
+          .\\ue\\Engine\\Binaries\\Win64\\ueEditor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
       - name: Remove outdated assets
         run: |
-          .\\ue4\Engine\\Binaries\\Win64\\UnrealPak.exe -List -csv="$Env:GITHUB_WORKSPACE\\pakContents.csv" -LogCmds="LogPakFile Warning" $Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-WindowsNoEditor.pak
+          .\\ue\Engine\\Binaries\\Win64\\UnrealPak.exe -List -csv="$Env:GITHUB_WORKSPACE\\pakContents.csv" -LogCmds="LogPakFile Warning" $Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak
           $pakData = Import-Csv .\pakContents.csv
           $pakFiles = $pakData | ForEach-Object { $_.Filename }
           $files = @()
@@ -275,15 +275,15 @@ jobs:
         
       - name: Undo "Replace SML with hooks-only version"
         run: |
-          rm -r SML\Plugins\SML
-          rm -r SML\Plugins\SMLEditor
-          cp SML_TEMP\SML SML\Plugins -Recurse
-          cp SML_TEMP\SMLEditor SML\Plugins -Recurse
+          rm -r SML\Mods\SML
+          rm -r SML\Mods\SMLEditor
+          cp SML_TEMP\SML SML\Mods -Recurse
+          cp SML_TEMP\SMLEditor SML\Mods -Recurse
           
       - name: Update SML targetGameVersion
         uses: mingjun97/file-regex-replace@v1
         with:
-          include: 'SML[\/\\]Plugins[\/\\]SML[\/\\]Source[\/\\]SML[\/\\]Private[\/\\]SatisfactoryModLoader.cpp'
+          include: 'SML[\/\\]Mods[\/\\]SML[\/\\]Source[\/\\]SML[\/\\]Private[\/\\]SatisfactoryModLoader.cpp'
           regex: '(const long targetGameVersion = )\d+;'
           replacement: "$1${{ needs.check.outputs.gameVersion }};"
       
@@ -293,13 +293,13 @@ jobs:
           git rm -r --cached Source Content
           git add Source Content
           git add Config/DefaultEngine.ini
-          git add Plugins/SML/Source/SML/Private/SatisfactoryModLoader.cpp
+          git add Mods/SML/Source/SML/Private/SatisfactoryModLoader.cpp
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
       - name: Restore registry
         if: always()
-        working-directory: ue4
+        working-directory: ue
         run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           
       - name: Archive asset dump
