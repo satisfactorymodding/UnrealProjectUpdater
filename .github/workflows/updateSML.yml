@@ -270,7 +270,7 @@ jobs:
         run: |
           $beaverAssets = Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt 
           cd SML
-          $beaverAssets | Foreach-Object { git reset --hard Content/$_ }
+          $beaverAssets | Foreach-Object { git checkout Content/$_ }
         
       - name: Undo "Replace SML with hooks-only version"
         run: |
