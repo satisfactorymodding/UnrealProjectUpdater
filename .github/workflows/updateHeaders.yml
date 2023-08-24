@@ -148,7 +148,9 @@ jobs:
           repository: 'mircearoata/UEAssetToolkit'
           
       - name: Copy AssetDumper to project
-        run: cp UEAssetToolkit\\AssetDumper sfm\\FactoryGame\\Mods -Recurse
+        run: |
+          mkdir sfm\\FactoryGame\\Mods
+          cp UEAssetToolkit\\AssetDumper sfm\\FactoryGame\\Mods -Recurse
       
       - name: Compile project
         run: |
