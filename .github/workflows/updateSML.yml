@@ -153,7 +153,6 @@ jobs:
           gh release download --repo satisfactorymodding/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
           7z x UnrealEngine-CSS-Editor-Win64.7z.001
           rm UnrealEngine-CSS-Editor-Win64.7z*
-          mv lb\\win\\Engine Engine
           reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
           .\\SetupScripts\\Register.bat
         env:
