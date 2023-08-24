@@ -245,6 +245,11 @@ jobs:
           regex: '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
           flags: 'gms'
           replacement: ${{ steps.collisionProfiles.outputs.match }}
+          
+      - name: Restore SMLEditor utils folder
+        run: |
+          mkdir SML\Mods\SMLEditor\Content
+          cp SML_TEMP\SMLEditor\Content\Utils SML\Mods\SMLEditor\Content -Recurse
       
       - name: Run asset generator
         run: |
