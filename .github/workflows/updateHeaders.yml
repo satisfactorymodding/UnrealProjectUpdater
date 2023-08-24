@@ -58,14 +58,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
-          path: 'satisfactory-modding'
+          path: 'sfm'
           repository: 'mircearoata/satisfactory-modding'
 
       - name: Read current repo version
         id: currentHeadersVersion
         uses: juliangruber/read-file-action@v1
         with:
-          path: 'satisfactory-modding/Headers/currentVersion.txt'
+          path: 'sfm/Headers/currentVersion.txt'
       
       - name: Set gameVersion
         id: setGameVersion
@@ -111,7 +111,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
-          path: 'satisfactory-modding'
+          path: 'sfm'
           repository: 'mircearoata/satisfactory-modding'
           token: ${{ secrets.ACCESS_TOKEN }}
 
@@ -133,7 +133,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         
       - name: Add Wwise
-        working-directory: satisfactory-modding/FactoryGame/Plugins
+        working-directory: sfm/FactoryGame/Plugins
         run: |
           $ProgressPreference = 'SilentlyContinue'
           Invoke-WebRequest -Uri "${{ secrets.WWISE_URL }}" -OutFile "Wwise.7z"
@@ -148,22 +148,22 @@ jobs:
           repository: 'mircearoata/UEAssetToolkit'
           
       - name: Copy AssetDumper to project
-        run: cp UEAssetToolkit\\AssetDumper satisfactory-modding\\FactoryGame\\Mods -Recurse
+        run: cp UEAssetToolkit\\AssetDumper sfm\\FactoryGame\\Mods -Recurse
       
       - name: Compile project
         run: |
-          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
+          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\sfm\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
       - name: Set AssetDumper BuildId
         run: |
-          .\jq-win64.exe -r '.BuildId = ""SML""' satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
-          rm satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
-          mv FactoryGame-Win64-Shipping.modules satisfactory-modding\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64
+          .\jq-win64.exe -r '.BuildId = ""SML""' sfm\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules > FactoryGame-Win64-Shipping.modules
+          rm sfm\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64\\FactoryGame-Win64-Shipping.modules
+          mv FactoryGame-Win64-Shipping.modules sfm\\FactoryGame\\Mods\\AssetDumper\\Binaries\\Win64
           
       - name: Copy AssetDumper to game
-        run: cp satisfactory-modding\\FactoryGame\\Mods\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
+        run: cp sfm\\FactoryGame\\Mods\\AssetDumper Satisfactory\\FactoryGame\\Mods -Recurse
           
       - name: Run game and dump native classes
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -DumpNativeClasses" -Wait
@@ -173,24 +173,24 @@ jobs:
         run: 7z x Headers.zip -oHeaders
       
       - name: Compile tools
-        working-directory: satisfactory-modding/GenerationScripts
+        working-directory: sfm/GenerationScripts
         run: |
           MSBuild.exe FixHeaders\\FixHeaders.sln
           MSBuild.exe ImplementHeaders\\ImplementHeaders.sln
           
       - name: Update headers and dummy implementations
-        run: py satisfactory-modding\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ needs.check.outputs.gameVersion }}" --uepath="ue"
+        run: py sfm\\GenerationScripts\\generateCode.py --headers "Satisfactory\\CommunityResources\\Headers" --version "${{ needs.check.outputs.gameVersion }}" --uepath="ue"
         
       - name: Run defaults generator
-        run: py satisfactory-modding\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
+        run: py sfm\\GenerationScripts\\defaultValues.py --dump "Satisfactory\\FactoryGame\\NativeClassDump"
       
       - name: Compile updated project
         run: |
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
-          MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
+          MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
       
       - name: Commit and push
-        working-directory: satisfactory-modding
+        working-directory: sfm
         run: |
           git rm -r --cached *
           git add .
