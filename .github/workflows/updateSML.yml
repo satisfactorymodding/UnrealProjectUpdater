@@ -197,7 +197,7 @@ jobs:
       
       - name: Compile project
         run: |
-          .\\ue\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
+          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
@@ -249,7 +249,7 @@ jobs:
       
       - name: Run asset generator
         run: |
-          .\\ue\\Engine\\Binaries\\Win64\\ueEditor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
+          .\\ue\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
       - name: Remove outdated assets
         run: |

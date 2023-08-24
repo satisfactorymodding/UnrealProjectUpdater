@@ -152,7 +152,7 @@ jobs:
       
       - name: Compile project
         run: |
-          .\\ue\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\satisfactory-modding\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\satisfactory-modding\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
