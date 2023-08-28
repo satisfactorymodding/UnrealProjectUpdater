@@ -273,9 +273,9 @@ jobs:
             
       - name: Revert handmade assets
         run: |
-          $beaverAssets = Get-Content .\\satisfactory-modding-actions\\BeaverAssets.txt 
+          $customAssets = Get-Content .\\satisfactory-modding-actions\\CustomAssets.txt 
           cd SML
-          $beaverAssets | Foreach-Object { git checkout Content/$_ }
+          $customAssets | Foreach-Object { git checkout Content/$_ }
         
       - name: Undo "Replace SML with hooks-only version"
         run: |

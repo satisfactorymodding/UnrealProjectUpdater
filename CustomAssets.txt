@@ -15,7 +15,10 @@ FactoryGame/Buildable/-Shared/Material/Resources/TX_Rubber_N.uasset
 FactoryGame/Buildable/-Shared/Material/Resources/TX_Steel_BC.uasset
 FactoryGame/Buildable/-Shared/Material/Resources/TX_Steel_MREO.uasset
 FactoryGame/Buildable/-Shared/Material/Resources/TX_Steel_N.uasset
+FactoryGame/Buildable/-Shared/Material/MM_Factory_Array.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultAlbedo_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultMasks_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultNormal_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultPackedNormal_01.uasset
+FactoryGame/MasterMaterials/MM_FactoryBaked.uasset
+Splash
