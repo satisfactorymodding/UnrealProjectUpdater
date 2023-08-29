@@ -144,19 +144,8 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1
       
-      - name: Create Unreal Engine directory
-        run: mkdir ue
-        
       - name: Setup Unreal Engine
-        working-directory: ue
-        run: |
-          gh release download --repo satisfactorymodding/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
-          7z x UnrealEngine-CSS-Editor-Win64.7z.001
-          rm UnrealEngine-CSS-Editor-Win64.7z*
-          reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
-          .\\SetupScripts\\Register.bat
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        uses: mircearoata/satisfactory-modding-ue-action@master
         
       - name: Copy latest game source
         run: |
@@ -196,7 +185,7 @@ jobs:
       
       - name: Compile project
         run: |
-          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
+          & "$Env:UE_ROOT\\Engine\\Build\\BatchFiles\\Build.bat"  -projectfiles -project="$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\SML\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
@@ -222,7 +211,8 @@ jobs:
         run: Start-Process .\\Satisfactory\\Engine\\Binaries\\Win64\\FactoryGame-Win64-Shipping.exe -ArgumentList "-EpicPortal -RenderOffscreen -DumpAllGameAssets -RootAssetPath=/Game -ExcludePackagePaths=/Game/WwiseAudio -ExcludePackageNames=/Game/Geometry/Meshes/1M_Cube_Chamfer -PackagesPerTick=32 -ExitOnFinish" -NoNewWindow -Wait
       
       - name: Dump configs from pak file
-        run: .\\ue\Engine\\Binaries\\Win64\\UnrealPak.exe -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
+        run: |
+          & "$Env:UE_ROOT\\Engine\\Binaries\\Win64\\UnrealPak.exe" -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
       
       - name: Read DefaultEngine.ini
         id: defaultEngineIni
@@ -253,11 +243,11 @@ jobs:
       
       - name: Run asset generator
         run: |
-          .\\ue\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
+          & "$Env:UE_ROOT\\Engine\\Binaries\\Win64\\UnrealEditor-Cmd.exe" "$Env:GITHUB_WORKSPACE\\SML\\FactoryGame.uproject" -run=AssetGenerator -DumpDirectory="$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\AssetDump" -ForceGeneratePackageNames="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\ForceGeneratePackages.txt" -SkipSavePackages="$Env:GITHUB_WORKSPACE\\satisfactory-modding-actions\\SkipSavePackages.txt" -PublicProject -stdout -unattended -NoLogTimes
       
       - name: Remove outdated assets
         run: |
-          .\\ue\Engine\\Binaries\\Win64\\UnrealPak.exe -List -csv="$Env:GITHUB_WORKSPACE\\pakContents.csv" -LogCmds="LogPakFile Warning" $Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak
+          & "$Env:UE_ROOT\\Engine\\Binaries\\Win64\\UnrealPak.exe" -List -csv="$Env:GITHUB_WORKSPACE\\pakContents.csv" -LogCmds="LogPakFile Warning" $Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak
           $pakData = Import-Csv .\pakContents.csv
           $pakFiles = $pakData | ForEach-Object { $_.Filename }
           $files = @()

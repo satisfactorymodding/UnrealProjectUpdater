@@ -118,19 +118,8 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1
       
-      - name: Create Unreal Engine directory
-        run: mkdir ue
-        
       - name: Setup Unreal Engine
-        working-directory: ue
-        run: |
-          gh release download --repo satisfactorymodding/UnrealEngine -p "UnrealEngine-CSS-Editor-Win64.7z.*"
-          7z x UnrealEngine-CSS-Editor-Win64.7z.001
-          rm UnrealEngine-CSS-Editor-Win64.7z*
-          reg save "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
-          .\\SetupScripts\\Register.bat
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        uses: mircearoata/satisfactory-modding-ue-action@master
         
       - name: Add Wwise
         working-directory: sfm/FactoryGame/Plugins
@@ -154,7 +143,7 @@ jobs:
       
       - name: Compile project
         run: |
-          .\\ue\\Engine\\Build\\BatchFiles\\Build.bat  -projectfiles -project="$Env:GITHUB_WORKSPACE\\sfm\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
+          & "$Env:UE_ROOT\\Engine\\Build\\BatchFiles\\Build.bat"  -projectfiles -project="$Env:GITHUB_WORKSPACE\\sfm\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
           
