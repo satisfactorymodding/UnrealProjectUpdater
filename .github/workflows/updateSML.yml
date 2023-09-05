@@ -290,11 +290,6 @@ jobs:
           git commit -m "Automated update to CL${{ needs.check.outputs.gameVersion }}"
           git push
           
-      - name: Restore registry
-        if: always()
-        working-directory: ue
-        run: reg restore "HKCU\Software\Epic Games\Unreal Engine\Builds" UEBuilds.hiv
-          
       - name: Archive asset dump
         if: always()
         run: 7z a AssetDump.7z Satisfactory\FactoryGame\AssetDump
