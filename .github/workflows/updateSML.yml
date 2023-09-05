@@ -162,11 +162,9 @@ jobs:
       - name: Add Wwise
         run: |
           gh release download --repo mircearoata/wwise-cli -p "wwise-cli.exe"
-          ./wwise-cli.exe download --filter Packages=SDK --filter DeploymentPlatforms=Windows_vc140 --filter DeploymentPlatforms=Windows_vc150 --filter DeploymentPlatforms=Windows_vc160 --filter DeploymentPlatforms=Windows_vc170 --filter DeploymentPlatforms=Linux --filter DeploymentPlatforms=
-          ./wwise-cli.exe integrate-ue --project "SML\FactoryGame.uproject"
+          ./wwise-cli.exe download     --sdk-version "2022.1.3.8179"          --filter Packages=SDK --filter DeploymentPlatforms=Windows_vc140 --filter DeploymentPlatforms=Windows_vc150 --filter DeploymentPlatforms=Windows_vc160 --filter DeploymentPlatforms=Windows_vc170 --filter DeploymentPlatforms=Linux --filter DeploymentPlatforms=
+          ./wwise-cli.exe integrate-ue --integration-version "2022.1.3.2621"  --project "sfm\FactoryGame\FactoryGame.uproject"
         env:
-          WWISE_SDK_VERSION: '2022.1.3.8179'
-          WWISE_INTEGRATION_VERSION: '2022.1.3.2621'
           WWISE_EMAIL: ${{ secrets.WWISE_EMAIL }}
           WWISE_PASSWORD: ${{ secrets.WWISE_PASSWORD }}
           
