@@ -148,6 +148,8 @@ jobs:
       
       - name: Setup Unreal Engine
         uses: mircearoata/satisfactory-modding-ue-action@master
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
         
       - name: Copy latest game source
         run: |

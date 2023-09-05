@@ -122,6 +122,8 @@ jobs:
       
       - name: Setup Unreal Engine
         uses: mircearoata/satisfactory-modding-ue-action@master
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
         
       - name: Add Wwise
         run: |
