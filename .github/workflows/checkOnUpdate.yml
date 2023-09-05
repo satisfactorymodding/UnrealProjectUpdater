@@ -13,7 +13,7 @@ jobs:
   headers:
     uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateHeaders.yml@master
     with:
-      branch: Experimentalmental
+      branch: Experimental
     secrets: inherit
   SML:
     uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateSML.yml@master
