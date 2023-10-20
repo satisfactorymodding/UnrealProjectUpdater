@@ -146,8 +146,10 @@ jobs:
           mkdir sfm\\FactoryGame\\Mods
           cp UEAssetToolkit\\AssetDumper sfm\\FactoryGame\\Mods -Recurse
       
-      - name: Compile project
+      - name: Compile AssetDumper (project without sources)
         run: |
+          Remove-Item .\\sfm\\FactoryGame\\Source\\FactoryGame\\Public -Recurse -Force -Confirm:$false -ErrorAction Ignore
+          Remove-Item .\\sfm\\FactoryGame\\Source\\FactoryGame\\Private -Recurse -Force -Confirm:$false -ErrorAction Ignore
           & "$Env:UE_ROOT\\Engine\\Build\\BatchFiles\\Build.bat"  -projectfiles -project="$Env:GITHUB_WORKSPACE\\sfm\\FactoryGame\\FactoryGame.uproject" -game -rocket -progres
           MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Shipping" /p:Platform="Win64" /t:"Games\FactoryGame"
           MSBuild.exe .\\sfm\\FactoryGame\\FactoryGame.sln /p:Configuration="Development Editor" /p:Platform="Win64" /t:"Games\FactoryGame"
