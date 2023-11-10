@@ -175,18 +175,15 @@ jobs:
           path: 'UEAssetToolkit'
           repository: 'mircearoata/UEAssetToolkit'
           
+      - name: Replace SML with hooks-only version
+        run: |
+          mv SML\Mods Mods_TEMP
+          cp satisfactory-modding-actions\SML_HooksOnly SML\Mods -Recurse
+          
       - name: Copy UEAssetToolkit to project
         run: |
           cp UEAssetToolkit\\AssetDumper SML\\Mods -Recurse
           cp UEAssetToolkit\\AssetGenerator SML\\Mods -Recurse
-          
-      - name: Replace SML with hooks-only version
-        run: |
-          mkdir SML_TEMP
-          mv SML\Mods\SML SML_TEMP\
-          mv SML\Mods\SMLEditor SML_TEMP\
-          cp satisfactory-modding-actions\SML_HooksOnly\SML SML\Mods -Recurse
-          cp satisfactory-modding-actions\SML_HooksOnly\SMLEditor SML\Mods -Recurse
       
       - name: Compile project
         run: |
@@ -243,8 +240,7 @@ jobs:
           
       - name: Restore SMLEditor utils folder
         run: |
-          mkdir SML\Mods\SMLEditor\Content
-          cp SML_TEMP\SMLEditor\Content\Utils SML\Mods\SMLEditor\Content -Recurse
+          cp Mods_TEMP\SMLEditor\Content\Utils SML\Mods\SMLEditor\Content\Utils -Recurse
       
       - name: Run asset generator
         run: |
@@ -274,10 +270,8 @@ jobs:
         
       - name: Undo "Replace SML with hooks-only version"
         run: |
-          rm -r SML\Mods\SML
-          rm -r SML\Mods\SMLEditor
-          cp SML_TEMP\SML SML\Mods -Recurse
-          cp SML_TEMP\SMLEditor SML\Mods -Recurse
+          rm -r SML\Mods
+          mv Mods_TEMP SML\Mods
       
       - name: Commit and push
         working-directory: SML
