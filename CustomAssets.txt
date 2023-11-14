@@ -22,3 +22,9 @@ FactoryGame/MasterMaterials/Resources/TX_DefaultNormal_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultPackedNormal_01.uasset
 FactoryGame/MasterMaterials/MM_FactoryBaked.uasset
 Splash
+FactoryGame/Map/GameLevel01/Persistent_Level.umap
+FactoryGame/Map/GameLevel01/Persistent_Level_HLODLayer_Instanced.uasset
+FactoryGame/Map/GameLevel01/Persistent_Level_HLODLayer_Merged.uasset
+__ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/7/DB/6NRX4CORYK0802MLMSKSL6.uasset
+__ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/7/YX/J1XBCGN4I9V81ZFD8QJSFG.uasset
+__ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/B/A2/O5ZT0TJIMH8M4499FH4WDK.uasset
