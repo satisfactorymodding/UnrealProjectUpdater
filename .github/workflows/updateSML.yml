@@ -216,27 +216,22 @@ jobs:
         run: |
           & "$Env:UE_ROOT\\Engine\\Binaries\\Win64\\UnrealPak.exe" -Extract "$Env:GITHUB_WORKSPACE\\Satisfactory\\FactoryGame\\Content\\Paks\\FactoryGame-Windows.pak" "$Env:GITHUB_WORKSPACE\\SatisfactoryPak" -Filter="FactoryGame/Config/*.ini"
       
-      - name: Read DefaultEngine.ini
-        id: defaultEngineIni
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: 'SatisfactoryPak/FactoryGame/Config/DefaultEngine.ini'
-      
-      - name: Read CollisionProfiles
-        id: collisionProfiles
-        uses: actions-ecosystem/action-regex-match@v2
-        with:
-          text: ${{ steps.defaultEngineIni.outputs.content }}
-          regex: '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
-          flags: 'gms'
-      
       - name: Update CollisionProfiles
-        uses: mingjun97/file-regex-replace@v1
-        with:
-          include: 'SML\\Config\\DefaultEngine.ini'
-          regex: '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
-          flags: 'gms'
-          replacement: ${{ steps.collisionProfiles.outputs.match }}
+        run: |
+          $pakEngineIniPath = Resolve-Path -Path 'SatisfactoryPak\\FactoryGame\\Config\\DefaultEngine.ini'
+          $projectEngineIniPath = Resolve-Path -Path 'SML\\Config\\DefaultEngine.ini'
+          
+          $options = [Text.RegularExpressions.RegexOptions]'Multiline,Singleline'
+          $collisionProfilesRegex = '^\[\/Script\/Engine\.CollisionProfile\].+?$(?=\r?\n\[)'
+          
+          $pakEngineIni = Get-Content $pakEngineIniPath -Encoding UTF8 -Raw
+          $projectEngineIni = Get-Content $projectEngineIniPath -Encoding UTF8 -Raw
+          
+          $newCollisionProfiles = [regex]::Match($pakEngineIni, $collisionProfilesRegex, $options)
+          $newProjectEngineIni = [regex]::Replace($projectEngineIni, $collisionProfilesRegex, $newCollisionProfiles.Value, $options)
+          
+          # Out-File would use UTF8-BOM
+          [System.IO.File]::WriteAllText($projectEngineIniPath, $newProjectEngineIni)
           
       - name: Restore SMLEditor utils folder
         run: |
