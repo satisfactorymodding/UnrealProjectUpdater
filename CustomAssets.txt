@@ -25,11 +25,11 @@ FactoryGame/Buildable/-Shared/Texture/PanelAtlas_Nor.uasset
 FactoryGame/MasterMaterials/MM_BakedStencil_01.uasset
 FactoryGame/MasterMaterials/MM_ConveyorBelt.uasset
 FactoryGame/MasterMaterials/Resources/MF_GetPrimaryColor.uasset
-FactoryGame/MasterMaterials/Resources/MF_GetPrimaryColor_2.uasset
 FactoryGame/MasterMaterials/Resources/MF_GetSecondaryColor.uasset
-FactoryGame/MasterMaterials/Resources/MF_GetSecondaryColor_2.uasset
+FactoryGame/MasterMaterials/Resources/MF_GetUnMirrorVector.uasset
 FactoryGame/MasterMaterials/Resources/MF_HasPower.uasset
-FactoryGame/MasterMaterials/Resources/MF_HasPower_2.uasset
+FactoryGame/MasterMaterials/Resources/MF_MaterialID.uasset
+FactoryGame/MasterMaterials/Resources/MF_PaternID.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultAlbedo_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultMasks_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultNormal_01.uasset
