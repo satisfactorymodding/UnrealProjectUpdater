@@ -270,7 +270,9 @@ jobs:
         
       - name: Update SML GameVersion
         run: |
-          .\jq-win64.exe -r '.GameVersion = ""${{ needs.check.outputs.gameVersion }}""' --tab SML\\Mods\\SML\\SML.uplugin > SML.uplugin
+          $RawString = .\jq-win64.exe -r '.GameVersion = ""${{ needs.check.outputs.gameVersion }}""' --tab SML\\Mods\\SML\\SML.uplugin
+          $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+          [System.IO.File]::WriteAllLines("SML.uplugin", $RawString, $Utf8NoBomEncoding)
           rm SML\\Mods\\SML\\SML.uplugin
           mv SML.uplugin SML\\Mods\\SML
       
