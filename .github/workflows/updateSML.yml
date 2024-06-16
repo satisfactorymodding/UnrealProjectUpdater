@@ -267,6 +267,12 @@ jobs:
         run: |
           rm -r SML\Mods
           mv Mods_TEMP SML\Mods
+        
+      - name: Update SML GameVersion
+        run: |
+          .\jq-win64.exe -r '.GameVersion = ${{ needs.check.outputs.gameVersion }}' --tab SML\\Mods\\SML\\SML.uplugin > SML.uplugin
+          rm SML\\Mods\\SML\\SML.uplugin
+          mv SML.uplugin SML\\Mods\\SML
       
       - name: Commit and push
         working-directory: SML
