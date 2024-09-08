@@ -1,4 +1,4 @@
-name: Check and update satisfactorymodding/SatisfactoryModLoader
+name: Check and update SatisfactoryModLoader
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on: [self-hosted, project-updater]
     outputs:
      shouldRun: ${{ steps.setShouldRun.outputs.shouldRun }}
      gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
@@ -61,7 +61,7 @@ jobs:
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'sfm'
-          repository: 'mircearoata/satisfactory-modding'
+          repository: 'satisfactorymodding/UnrealProjectGenerator'
       
       - name: Checkout SML
         uses: actions/checkout@v3
@@ -95,7 +95,7 @@ jobs:
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
   
   updateSML:
-    runs-on: self-hosted
+    runs-on: [self-hosted, project-updater]
     needs: check
     if: needs.check.outputs.shouldRun == 'true'
     steps:
@@ -136,7 +136,7 @@ jobs:
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'sfm'
-          repository: 'mircearoata/satisfactory-modding'
+          repository: 'satisfactorymodding/UnrealProjectGenerator'
       
       - name: Checkout satisfactory-modding-actions
         uses: actions/checkout@v3

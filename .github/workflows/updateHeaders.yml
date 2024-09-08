@@ -1,4 +1,4 @@
-name: Check and update mircearoata/satisfactory-modding
+name: Check and update UnrealProjectGenerator
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ on:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on: [self-hosted, project-updater]
     outputs:
      shouldRun: ${{ steps.setShouldRun.outputs.shouldRun }}
      gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
@@ -61,7 +61,7 @@ jobs:
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'sfm'
-          repository: 'mircearoata/satisfactory-modding'
+          repository: 'satisfactorymodding/UnrealProjectGenerator'
 
       - name: Read current repo version
         id: currentHeadersVersion
@@ -81,7 +81,7 @@ jobs:
         run: Remove-Item * -Recurse -Force -Confirm:$false -ErrorAction Ignore
      
   updateHeaders:
-    runs-on: self-hosted
+    runs-on: [self-hosted, project-updater]
     needs: check
     if: needs.check.outputs.shouldRun == 'true'
     steps:
@@ -114,7 +114,7 @@ jobs:
         with:
           ref: 'refs/heads/${{ inputs.branch }}'
           path: 'sfm'
-          repository: 'mircearoata/satisfactory-modding'
+          repository: 'satisfactorymodding/UnrealProjectGenerator'
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Add msbuild to PATH

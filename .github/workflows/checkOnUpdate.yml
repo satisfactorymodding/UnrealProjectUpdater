@@ -9,14 +9,14 @@ on:
 concurrency: update
 
 jobs:
-  # TODO check for EXP->EA merges and git merge headers as well
+  # TODO 1.0
   headers:
-    uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateHeaders.yml@master
+    uses: ./.github/workflows/updateHeaders.yml
     with:
       branch: Experimental
     secrets: inherit
   SML:
-    uses: mircearoata/satisfactory-modding-actions/.github/workflows/updateSML.yml@master
+    uses: ./.github/workflows/updateSML.yml
     needs: [headers]
     if: always() && (needs.headers.result == 'success' || needs.headers.result == 'skipped')
     with:
