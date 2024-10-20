@@ -2,6 +2,7 @@ __ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/7/DB/6NRX4CORYK0
 __ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/7/YX/J1XBCGN4I9V81ZFD8QJSFG.uasset
 __ExternalActors__/FactoryGame/Map/GameLevel01/Persistent_Level/B/A2/O5ZT0TJIMH8M4499FH4WDK.uasset
 FactoryGame/-Shared/Collections/WeatherSystem/MPC_Weather.uasset
+FactoryGame/-Shared/Material/MaterialFunction
 FactoryGame/Buildable/-Shared/Material/Decal_Color.uasset
 FactoryGame/Buildable/-Shared/Material/Decal_Normal.uasset
 FactoryGame/Buildable/-Shared/Material/DecalColor_Masked.uasset
@@ -32,7 +33,9 @@ FactoryGame/Map/GameLevel01/Persistent_Level.umap
 FactoryGame/MasterMaterials/MM_BakedStencil_01.uasset
 FactoryGame/MasterMaterials/MM_ConveyorBelt.uasset
 FactoryGame/MasterMaterials/MM_FactoryBaked.uasset
+FactoryGame/MasterMaterials/Resources/MF_GetMetallic.uasset
 FactoryGame/MasterMaterials/Resources/MF_GetPrimaryColor.uasset
+FactoryGame/MasterMaterials/Resources/MF_GetRoughness.uasset
 FactoryGame/MasterMaterials/Resources/MF_GetSecondaryColor.uasset
 FactoryGame/MasterMaterials/Resources/MF_GetUnMirrorVector.uasset
 FactoryGame/MasterMaterials/Resources/MF_HasPower.uasset
@@ -44,6 +47,9 @@ FactoryGame/MasterMaterials/Resources/TX_DefaultNormal_01.uasset
 FactoryGame/MasterMaterials/Resources/TX_DefaultPackedNormal_01.uasset
 FactoryGame/PostProcess/MF_ApplyPaniniProjection.uasset
 FactoryGame/PostProcess/MF_PaniniProjection.uasset
+FactoryGame/Schematics/Research/BPD_ResearchTreeNode.uasset
+FactoryGame/World/Environment/Weather/MaterialFunctions
+FactoryGame/World/Environment/Weather/RT_WeatherOcclusion.uasset
 FactoryGame/World/MF_DepthOcclusion.uasset
 FactoryGame/World/MF_RainImpact.uasset
 FactoryGame/World/MF_WetnessMask.uasset
