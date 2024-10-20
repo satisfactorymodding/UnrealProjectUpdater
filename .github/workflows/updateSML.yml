@@ -131,7 +131,7 @@ jobs:
           repository: 'satisfactorymodding/SatisfactoryModLoader'
           token: ${{ secrets.ACCESS_TOKEN }}
       
-      - name: Checkout satisfactory-modding
+      - name: Checkout UnrealProjectGenerator
         uses: actions/checkout@v3
         with:
           ref: 'refs/heads/${{ inputs.branch }}'

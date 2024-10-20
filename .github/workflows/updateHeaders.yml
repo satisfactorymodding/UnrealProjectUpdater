@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'The game branch (EarlyAccess/Experimental)'
+        description: 'The game branch (Stable/Experimental)'
         required: true
         type: string
   workflow_call:
     inputs:
       branch:
-        description: 'The game branch (EarlyAccess/Experimental)'
+        description: 'The game branch (Stable/Experimental)'
         required: true
         type: string
     secrets:
@@ -29,7 +29,7 @@ jobs:
      gameVersion: ${{ steps.setGameVersion.outputs.gameVersion }}
     steps:
       - name: Validate branch name
-        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
+        if: inputs.branch != 'Stable' && inputs.branch != 'Experimental'
         run: |
           echo "Invalid branch ${{ inputs.branch }}"
           exit 1
@@ -42,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
-      - name: Download Satisfactory EarlyAccess version file
-        if: inputs.branch == 'EarlyAccess'
+      - name: Download Satisfactory Stable version file
+        if: inputs.branch == 'Stable'
         run: .\legendary.exe download CrabEA --no-https --base-path "$Env:GITHUB_WORKSPACE" --prefix="Engine/Binaries/Win64/FactoryGame-Win64-Shipping.version" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental version file
@@ -86,7 +86,7 @@ jobs:
     if: needs.check.outputs.shouldRun == 'true'
     steps:
       - name: Validate branch name
-        if: inputs.branch != 'EarlyAccess' && inputs.branch != 'Experimental'
+        if: inputs.branch != 'Stable' && inputs.branch != 'Experimental'
         run: |
           echo "Invalid branch ${{ inputs.branch }}"
           exit 1
@@ -101,8 +101,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
-      - name: Download Satisfactory EarlyAccess
-        if: inputs.branch == 'EarlyAccess'
+      - name: Download Satisfactory Stable
+        if: inputs.branch == 'Stable'
         run: .\legendary.exe download CrabEA --no-https --base-path "$Env:GITHUB_WORKSPACE" --game-folder="Satisfactory" -y
       
       - name: Download Satisfactory Experimental
