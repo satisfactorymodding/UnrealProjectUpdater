@@ -121,7 +121,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1
       
       - name: Setup Unreal Engine
-        uses: mircearoata/satisfactory-modding-ue-action@master
+        uses: satisfactorymodding/satisfactory-modding-ue-action@master
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
         
@@ -139,7 +139,7 @@ jobs:
         with:
           ref: 'refs/heads/dev'
           path: 'UEAssetToolkit'
-          repository: 'mircearoata/UEAssetToolkit'
+          repository: 'satisfactorymodding/UEAssetToolkit'
           
       - name: Copy AssetDumper to project
         run: |
